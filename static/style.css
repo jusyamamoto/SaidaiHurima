@@ -1,0 +1,83 @@
+body {
+  margin: 0;
+  background-color: #edf3f6;
+}
+
+.title {
+  font-size: 60px;
+  text-align: center;
+}
+
+.Product-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 768px;
+  padding: 16px;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.Product {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-align: left;
+  width: 100%;
+}
+
+input, textarea, select {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+button[type="submit"] {
+  background-color: #3f8ce4;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button[type="submit"]:hover {
+  background-color: #2a6cb8;
+}
+button[type="sell"] {
+  background-color: #3f8ce4;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button[type="sell"]:hover {
+  background-color: #2a6cb8;
+}
