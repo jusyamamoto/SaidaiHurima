@@ -59,10 +59,32 @@ const USER_PRODUCT_LIST_VIEW = (user, Product) => `
 </div>
 `;
 
+const PRODUCT_VIEW = (product) => `
+<h1 class="title">商品名 ${product.content}</h1>
+    <button id="deleteButton">削除</button>
+<script>
+    document.getElementById('deleteButton').addEventListener('click', async () => {
+        const productId = ${product.id};
+
+        const response = await fetch(\`/product/\${productId}\`, {
+            method: 'DELETE',
+        });
+
+        if (response.redirected) {
+            window.location.href = response.url; // リダイレクトを処理
+        } else {
+            const result = await response.text();
+            console.log(result); // エラーメッセージや成功メッセージを表示
+        }
+    });
+</script>
+`;
+
 module.exports = {
     HTML,
     PRODUCT_REGISTER_FORM_VIEW,
     PRODUCT_LIST_VIEW,
     USER_REGISTER_FORM_VIEW,
     USER_PRODUCT_LIST_VIEW,
+    PRODUCT_VIEW,
 };

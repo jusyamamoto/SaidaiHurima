@@ -58,6 +58,49 @@ app.post("/sell", async (c) => {
     return c.redirect("/");
 });
 
+app.get("/product/:id", async (c) => {
+    const productID = c.req.param("id");
+    
+    const product = await new Promise((resolve) => {
+        db.get(queries.Product.findById, productID, (err, row) => {
+            resolve(row);
+        });
+    });
+
+    if (!product) {
+        return c.notFound();
+    }
+
+    const productview = templates.PRODUCT_VIEW(product);
+
+    const response = templates.HTML(productview);
+
+    return c.html(response);
+});
+
+app.delete("/product/:id", async (c) => {
+    const productID = c.req.param("id");
+
+    // 商品が存在するか確認
+    const product = await new Promise((resolve) => {
+        db.get(queries.Product.findById, productID, (err, row) => {
+            resolve(row);
+        });
+    });
+
+    if (!product) {
+        return c.notFound(); 
+    }
+    
+    //商品を削除
+    await new Promise((resolve) => {
+        db.run(queries.Product.delete, productID, function(err) {
+            resolve();
+        });
+    });
+
+    return c.redirect("/");
+});
 
 app.get("/user/register", async (c) => {
     const registerForm = templates.USER_REGISTER_FORM_VIEW();
