@@ -10,7 +10,9 @@ const Product = {
     `,
     create: `INSERT INTO Product (content, price, user_id, created_at) VALUES (?, ?, ?, ?);`,
     findAll: `SELECT * FROM Product;`,
+    findById: `SELECT * FROM Product WHERE id = ?;`,
     findByUserId: `SELECT * FROM Product WHERE user_id = ?;`,
+    delete: 'DELETE FROM Product WHERE id = ?;',
 };
 
 const Users = {
