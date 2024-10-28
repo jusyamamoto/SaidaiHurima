@@ -22,7 +22,7 @@ const PRODUCT_REGISTER_FORM_VIEW = () => `
     <input type="text" name="price" id="price" />
     <label for="faculty">学部</label>
     <input type="text" name="faculty" id="faculty" />
-    <label for="department">学部</label>
+    <label for="department">学科</label>
     <input type="text" name="department" id="department" />
     <label for="user_id">ユーザーID</label>
     <input type="text" name="user_id" id="user_id" />
