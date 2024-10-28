@@ -58,14 +58,38 @@ app.post("/sell", async (c) => {
     const body = await c.req.parseBody();
     const now = new Date().toISOString();
 
-    await new Promise((resolve) => {
-        db.run(queries.Product.create, body.content, body.price, body.faculty, body.department, body.user_id, now, function(err) {
-            resolve();
+    // メールアドレスからユーザーIDを取得
+    const userID = await new Promise((resolve, reject) => {
+        db.get(queries.Users.findByEmail, [body.email], (err, row) => {
+            if (err) {
+                reject(err); // エラーが発生した場合
+            } else if (row) {
+                resolve(row.id); // メールアドレスに対応するユーザーIDを返す
+            } else {
+                resolve(null); // メールアドレスが見つからない場合
+            }
         });
     });
 
-    return c.redirect("/");
+    if (!userID) {
+        return c.text("メールアドレスが存在しません", 400); // メールが存在しない場合
+    }
+
+    // ユーザーIDを使って商品を作成
+    const productID = await new Promise((resolve, reject) => {
+        db.run(queries.Product.create, body.content, body.price, body.faculty, body.department, userID, now, function(err) {
+            if (err) {
+                reject(err); // エラーが発生した場合
+            } else {
+                resolve(this.lastID); // 挿入された行のIDを取得
+            }
+        });
+    });
+
+    // 商品詳細ページにリダイレクト
+    return c.redirect(`/product/${productID}`);
 });
+
 
 app.get("/product/:id", async (c) => {
     const productID = c.req.param("id");
