@@ -22,7 +22,16 @@ db.serialize(() => {
 
 const app = new Hono();
 
+//topページを追加
 app.get("/", async (c) => {
+    const topContent = templates.TOP_VIEW();
+    const response = templates.HTML(topContent); // HTML全体の構造にTOPページのコンテンツを埋め込み
+    return c.html(response);
+});
+
+
+// /productに変更
+app.get("/product", async (c) => {
   const Product = await new Promise((resolve) => {
       db.all(queries.Product.findAll, (err, rows) => {
           resolve(rows);

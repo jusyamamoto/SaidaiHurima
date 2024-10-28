@@ -13,6 +13,17 @@ const HTML = (body) => `
 </html>
 `;
 
+//topページHTMLを追加
+const TOP_VIEW = () => `
+<h1 class="title">Saidai Hurima</h1>
+<p>このサイトでは、商品を出品・購入できます。以下のリンクから利用可能な機能にアクセスしてください。</p>
+<ul>
+    <li><a href="/sell">商品出品</a></li>
+    <li><a href="/product">商品一覧</a></li>
+    <li><a href="/user/register">ユーザー登録</a></li>
+</ul>
+`;
+
 const PRODUCT_REGISTER_FORM_VIEW = () => `
 <h1 class="title">商品出品</h1>
 <form action="/sell" method="POST">
@@ -91,4 +102,5 @@ module.exports = {
     USER_REGISTER_FORM_VIEW,
     USER_PRODUCT_LIST_VIEW,
     PRODUCT_VIEW,
+    TOP_VIEW, // TOPページ用の関数をエクスポートに追加
 };
