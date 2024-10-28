@@ -81,3 +81,20 @@ button[type="sell"] {
 button[type="sell"]:hover {
   background-color: #2a6cb8;
 }
+
+.container {
+  display: flex;
+  align-items: flex-start; /* 縦方向の整列（オプション） */
+  gap: 20px; /* 写真と情報の間のスペースを調整 */
+}
+
+.picture img {
+  max-width: 200px; /* 画像の最大幅を設定 */
+  height: auto; /* アスペクト比を保ったまま高さを自動調整 */
+}
+
+#item-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* テキストを中央揃えにしたい場合 */
+}

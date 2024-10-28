@@ -32,6 +32,7 @@ const Users = {
     findAll: `SELECT * FROM users;`,
     findById: `SELECT * FROM users WHERE id = ?;`,
     findByTweetId: `SELECT * FROM users WHERE id = (SELECT user_id FROM Product WHERE id = ?);`,
+    findByEmail: `SELECT * FROM users WHERE email = ?;`,
 };
 
 module.exports = {

@@ -24,6 +24,7 @@ const TOP_VIEW = () => `
 </ul>
 `;
 
+//商品出品のhtmlを追加
 const PRODUCT_REGISTER_FORM_VIEW = () => `
 <h1 class="title">商品出品</h1>
 <form action="/sell" method="POST">
@@ -35,17 +36,18 @@ const PRODUCT_REGISTER_FORM_VIEW = () => `
     <input type="text" name="faculty" id="faculty" />
     <label for="department">学科</label>
     <input type="text" name="department" id="department" />
-    <label for="user_id">ユーザーID</label>
-    <input type="text" name="user_id" id="user_id" />
+    <label for="email">メールアドレス</label>
+    <input type="email" name="email" id="email" />
     <button type="sell">出品</button>
 </form>
 `;
 
+//商品一覧のhtmlを追加
 const PRODUCT_LIST_VIEW = (Product) => `
 <h1 class="title">商品一覧</h1>
 <div class="Product-list">
     ${Product
-      .map((Product) => `<div class="Product">${Product.content}</div>`)
+      .map((Product) => `<div class="Product"><a href="/product/${Product.id}">${Product.content}</div>`)
       .join("\n")}
 </div>
 `;
@@ -75,8 +77,20 @@ const USER_PRODUCT_LIST_VIEW = (user, Product) => `
 `;
 
 const PRODUCT_VIEW = (product) => `
-<h1 class="title">商品名 ${product.content}</h1>
-    <button id="deleteButton">削除</button>
+<div class="container">
+    <div class="picture">
+        <img src="sample.png" alt="サンプル">
+    </div>
+    <div id="item-info">
+        <p>商品名: ${product.content}</p>
+        <p>学部: ${product.faculty}</p>
+        <p>学科: ${product.department}</p>
+        <p>値段: ${product.price}円</p>
+        <p>出品日: ${product.created_at}</p>
+    </div>
+</div>
+
+<button id="deleteButton">削除</button>
 <script>
     document.getElementById('deleteButton').addEventListener('click', async () => {
         const productId = ${product.id};
