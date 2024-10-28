@@ -20,6 +20,10 @@ const PRODUCT_REGISTER_FORM_VIEW = () => `
     <input type="text" name="content" id="content" />
     <label for="price">値段</label>
     <input type="text" name="price" id="price" />
+    <label for="faculty">学部</label>
+    <input type="text" name="faculty" id="faculty" />
+    <label for="department">学部</label>
+    <input type="text" name="department" id="department" />
     <label for="user_id">ユーザーID</label>
     <input type="text" name="user_id" id="user_id" />
     <button type="sell">出品</button>
@@ -42,8 +46,8 @@ const USER_REGISTER_FORM_VIEW = () => `
     <input type="text" name="name" id="name" />
     <label for="studentID">学籍番号</label>
     <input type="text" name="studentID" id="studentID" />
-    <label for="department">学部</label>
-    <input type="text" name="department" id="department" />
+    <label for="faculty">学部</label>
+    <input type="text" name="faculty" id="faculty" />
     <label for="email">メールアドレス</label>
     <input type="email" name="email" id="email" />
     <button type="submit">登録</button>
