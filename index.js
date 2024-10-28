@@ -15,9 +15,9 @@ db.serialize(() => {
     db.run(queries.Users.create, 'みかん次郎', '22te', '理学部', 'mikan@example.com', '2022-08-15 00:00:01');
     db.run(queries.Users.create, 'ぶどう三郎', '24dd', '教育学部', 'budo@example.com', '2022-08-15 00:00:02');
 
-    db.run(queries.Product.create, '離散数学', 200, 3, '2023-01-01 00:00:00');
-    db.run(queries.Product.create, '確立統計', 100, 2, '2023-01-01 00:00:01');
-    db.run(queries.Product.create, '線形ダイス', 50, 1, '2023-01-01 00:00:02');
+    db.run(queries.Product.create, '離散数学', 200, 工学部, 情報工学科, 3, '2023-01-01 00:00:00');
+    db.run(queries.Product.create, '確立統計', 100, 工学部, 情報工学科, 2, '2023-01-01 00:00:01');
+    db.run(queries.Product.create, '線形ダイス', 50, 工学部, 情報工学科, 1, '2023-01-01 00:00:02');
 });
 
 const app = new Hono();
@@ -50,7 +50,7 @@ app.post("/sell", async (c) => {
     const now = new Date().toISOString();
 
     await new Promise((resolve) => {
-        db.run(queries.Product.create, body.content, body.price, body.user_id, now, function(err) {
+        db.run(queries.Product.create, body.content, body.price, body.faculty, body.department, body.user_id, now, function(err) {
             resolve();
         });
     });
@@ -72,7 +72,7 @@ app.post("/user/register", async (c) => {
     const now = new Date().toISOString();
 
     const userID = await new Promise((resolve) => {
-        db.run(queries.Users.create, body.name, body.studentID, body.department, body.email, now, function(err) {
+        db.run(queries.Users.create, body.name, body.studentID, body.faculty, body.email, now, function(err) {
             resolve(this.lastID);
         });
     });
