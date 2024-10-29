@@ -25,23 +25,63 @@ const TOP_VIEW = () => `
 </ul>
 `;
 
-//商品出品のhtmlを追加
 const PRODUCT_REGISTER_FORM_VIEW = () => `
 <h1 class="title">商品出品</h1>
-<form action="/sell" method="POST">
+<div id="message"></div> <!-- メッセージ表示用のエリア -->
+<form action="/sell" method="POST" id="productForm">
     <label for="content">商品名</label>
-    <input type="text" name="content" id="content" />
+    <input type="text" name="content" id="content" required />
     <label for="price">値段</label>
-    <input type="text" name="price" id="price" />
+    <input type="text" name="price" id="price" required />
+    
     <label for="faculty">学部</label>
-    <input type="text" name="faculty" id="faculty" />
+    <select name="faculty" id="faculty" required>
+        <option value="工学部">工学部</option>
+        <option value="理学部">理学部</option>
+    </select>
+
     <label for="department">学科</label>
-    <input type="text" name="department" id="department" />
+    <select name="department" id="department" required>
+        <option value="機械工学科">機械工学科</option>
+        <option value="情報工学科">情報工学科</option>
+        <option value="環境社会学科">環境社会学科</option>
+        <option value="数学科">数学科</option>
+        <option value="物理科">物理科</option>
+    </select>
+
     <label for="email">メールアドレス</label>
-    <input type="email" name="email" id="email" />
-    <button type="sell">出品</button>
+    <input type="email" name="email" id="email" required />
+    <button type="submit">出品</button>
 </form>
+
+<script>
+    document.getElementById('productForm').addEventListener('submit', async function(event) {
+        event.preventDefault(); // デフォルトのフォーム送信を防止
+
+        const formData = new FormData(this);
+        
+        const response = await fetch('/sell', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+        const messageDiv = document.getElementById('message');
+        
+        if (response.ok) {
+            messageDiv.innerText = result.message; // 成功メッセージを表示
+            messageDiv.style.color = 'green';
+            if (result.redirectUrl) {
+                setTimeout(() => window.location.href = result.redirectUrl, 1000); // リダイレクト
+            }
+        } else {
+            messageDiv.innerText = result.message; // エラーメッセージを表示
+            messageDiv.style.color = 'red';
+        }
+    });
+</script>
 `;
+
 
 //商品一覧のhtmlを追加
 const PRODUCT_LIST_VIEW = (Product) => `
@@ -118,7 +158,7 @@ const USER_PRODUCT_LIST_VIEW = (user, Product) => `
 </div>
 `;
 
-const PRODUCT_VIEW = (product) => `
+const PRODUCT_VIEW = (user, product)=> `
 <div class="container">
     <div class="picture">
         <img src="sample.png" alt="サンプル">
@@ -128,6 +168,7 @@ const PRODUCT_VIEW = (product) => `
         <p>学部: ${product.faculty}</p>
         <p>学科: ${product.department}</p>
         <p>値段: ${product.price}円</p>
+        <p>出品者: ${user.name}</p>
         <p>出品日: ${product.created_at}</p>
     </div>
 </div>

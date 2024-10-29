@@ -71,12 +71,17 @@ app.post("/sell", async (c) => {
     });
 
     if (!userID) {
-        return c.text("メールアドレスが存在しません", 400); // メールが存在しない場合
+        return c.json({ message: "メールアドレスが一致しません" }, 400);
     }
 
-    // ユーザーIDを使って商品を作成
+    // ユーザーIDが一致しない場合を確認
+    if (body.user_id && userID != body.user_id) {
+        return c.json({ message: "メールアドレスが一致しません" }, 400);
+    }
+
+    // 商品を作成
     const productID = await new Promise((resolve, reject) => {
-        db.run(queries.Product.create, body.content, body.price, body.faculty, body.department, userID, now, function(err) {
+        db.run(queries.Product.create, [body.content, body.price, body.faculty, body.department, userID, now], function(err) {
             if (err) {
                 reject(err); // エラーが発生した場合
             } else {
@@ -85,14 +90,23 @@ app.post("/sell", async (c) => {
         });
     });
 
-    // 商品詳細ページにリダイレクト
-    return c.redirect(`/product/${productID}`);
+    // 成功レスポンスにリダイレクトURLを含める
+    return c.json({ message: "商品が出品されました", productID, redirectUrl: `/product/${productID}` }, 200);
 });
+
+
 
 
 app.get("/product/:id", async (c) => {
     const productID = c.req.param("id");
+
     
+    const user = await new Promise((resolve) => {
+        db.get(queries.Product.findUserNameByProductId, productID, (err, row) => {
+            resolve(row);
+        });
+    });
+
     const product = await new Promise((resolve) => {
         db.get(queries.Product.findById, productID, (err, row) => {
             resolve(row);
@@ -103,7 +117,7 @@ app.get("/product/:id", async (c) => {
         return c.notFound();
     }
 
-    const productview = templates.PRODUCT_VIEW(product);
+    const productview = templates.PRODUCT_VIEW(user , product);
 
     const response = templates.HTML(productview);
 
