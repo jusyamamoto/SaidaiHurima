@@ -113,7 +113,8 @@ app.get("/product/:id", async (c) => {
 
 app.delete("/product/:id", async (c) => {
     const productID = c.req.param("id");
-
+    const body = await c.req.json();
+    
     // 商品が存在するか確認
     const product = await new Promise((resolve) => {
         db.get(queries.Product.findById, productID, (err, row) => {
@@ -122,9 +123,31 @@ app.delete("/product/:id", async (c) => {
     });
 
     if (!product) {
-        return c.notFound(); 
+        return c.json({ message: "商品が存在しません" }, 404);
     }
-    
+
+    // メールアドレスからユーザーIDを取得
+    const userID = await new Promise((resolve, reject) => {
+        db.get(queries.Users.findByEmail, [body.title], (err, row) => {
+            if (err) {
+                reject(err); // エラーが発生した場合
+            } else if (row) {
+                resolve(row.id); // メールアドレスに対応するユーザーIDを返す
+            } else {
+                resolve(null); // メールアドレスが見つからない場合
+            }
+        });
+    });
+
+    if (!userID) {
+        return c.json({ message: "メールアドレスが一致しません" }, 400);
+    }
+
+    //ユーザーIDが一致しないとき
+    if(userID != product.user_id){
+        return c.json({ message: "メールアドレスが一致しません" }, 400);
+    }
+
     //商品を削除
     await new Promise((resolve) => {
         db.run(queries.Product.delete, productID, function(err) {
@@ -132,7 +155,7 @@ app.delete("/product/:id", async (c) => {
         });
     });
 
-    return c.redirect("/");
+    return c.json({ message: "商品が削除されました", redirectUrl: "/product" }, 200);
 });
 
 app.get("/user/register", async (c) => {

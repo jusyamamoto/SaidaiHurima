@@ -89,22 +89,34 @@ const PRODUCT_VIEW = (product) => `
         <p>出品日: ${product.created_at}</p>
     </div>
 </div>
-
-<button id="deleteButton">削除</button>
+<div>
+    <label for="email">削除するにはメールアドレスを入力してください</label>
+    <input type="text" id="email" placeholder="メールアドレスを入力">
+    <button id="deleteButton">削除</button>
+</div>
 <script>
     document.getElementById('deleteButton').addEventListener('click', async () => {
         const productId = ${product.id};
+        const emailaddressInput = document.getElementById("email");
+        const emailaddress = emailaddressInput.value;
 
         const response = await fetch(\`/product/\${productId}\`, {
             method: 'DELETE',
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ title: emailaddress }),
         });
 
-        if (response.redirected) {
-            window.location.href = response.url; // リダイレクトを処理
+        const result = await response.json();
+
+        if (response.ok && result.redirectUrl) {
+            alert(result.message); // 成功メッセージを表示
+            window.location.href = result.redirectUrl;
         } else {
-            const result = await response.text();
-            console.log(result); // エラーメッセージや成功メッセージを表示
+            alert(result.message); // エラーメッセージを表示
         }
+
     });
 </script>
 `;
