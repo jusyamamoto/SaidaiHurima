@@ -15,6 +15,7 @@ const Product = {
     findById: `SELECT * FROM Product WHERE id = ?;`,
     findByUserId: `SELECT * FROM Product WHERE user_id = ?;`,
     delete: 'DELETE FROM Product WHERE id = ?;',
+    findByFacultyAndDepartment: `SELECT * FROM Product WHERE faculty = ? AND department = ?;`,// 学部と学科で検索するクエリを追加
 };
 
 const Users = {

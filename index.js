@@ -30,7 +30,6 @@ app.get("/", async (c) => {
 });
 
 
-// /productに変更
 app.get("/product", async (c) => {
   const Product = await new Promise((resolve) => {
       db.all(queries.Product.findAll, (err, rows) => {
@@ -134,6 +133,41 @@ app.delete("/product/:id", async (c) => {
 
     return c.redirect("/");
 });
+
+// 検索ページの追加
+app.get("/search", async (c) => {
+    const searchForm = templates.SEARCH_FORM_VIEW();  // 検索フォームのHTML生成
+    const response = templates.HTML(searchForm);
+    return c.html(response);
+});
+
+// 検索結果ページの追加
+app.get("/search/results", async (c) => { 
+    const faculty = c.req.query("faculty");
+    const department = c.req.query("department");
+
+    // データベースから検索条件に合致する商品を取得
+    const products = await new Promise((resolve) => {
+        db.all(
+            queries.Product.findByFacultyAndDepartment,
+            [faculty, department],
+            (err, rows) => {
+                if (err) {
+                    console.error("Database error:", err);
+                    resolve([]);  // エラーが発生した場合は空の結果を返す
+                } else {
+                    resolve(rows);
+                }
+            }
+        );
+    });
+
+    // 検索結果のHTML生成
+    const searchResults = templates.SEARCH_RESULT_FORM_VIEW(products); // 検索結果をHTMLに変換
+    const response = templates.HTML(searchResults);
+    return c.html(response);
+});
+
 
 app.get("/user/register", async (c) => {
     const registerForm = templates.USER_REGISTER_FORM_VIEW();
