@@ -304,7 +304,7 @@ app.delete("/user/:id", async (c) => {
         });
     });
 
-    return c.json({ message: "アカウントが削除されました", redirectUrl: "/product" }, 200);
+    return c.json({ message: "アカウントが削除されました", redirectUrl: "/" }, 200);
 });
 
 app.use("/static/*", serveStatic({ root: "./" }));
