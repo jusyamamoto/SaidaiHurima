@@ -17,6 +17,7 @@ const Product = {
     delete: 'DELETE FROM Product WHERE id = ?;',
     findByFacultyAndDepartment: `SELECT * FROM Product WHERE faculty = ? AND department = ?;`,// 学部と学科で検索するクエリを追加
     findUserNameByProductId: `SELECT u.name FROM Users u JOIN Product p ON u.id = p.user_id WHERE p.id = ?;`, // プロダクトIDからユーザー名を取得
+    deleteByUserId: `DELETE FROM Product WHERE user_id = ?;`, //特定のユーザーの商品を全消去
 };
 
 const Users = {
@@ -35,6 +36,7 @@ const Users = {
     findById: `SELECT * FROM users WHERE id = ?;`,
     findByTweetId: `SELECT * FROM users WHERE id = (SELECT user_id FROM Product WHERE id = ?);`,
     findByEmail: `SELECT * FROM users WHERE email = ?;`,
+    delete: `DELETE FROM users WHERE id = ?;`,
 };
 
 module.exports = {
