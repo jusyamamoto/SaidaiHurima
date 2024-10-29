@@ -156,6 +156,36 @@ const USER_PRODUCT_LIST_VIEW = (user, Product) => `
       .map((Product) => `<div class="Product">${Product.content}</div>`)
       .join("\n")}
 </div>
+<div>
+    <label for="email">アカウントを削除するにはメールアドレスを入力してください</label>
+    <input type="text" id="email" placeholder="メールアドレスを入力">
+    <button id="deleteButton">削除</button>
+</div>
+<script>
+    document.getElementById('deleteButton').addEventListener('click', async () => {
+        const userId = ${user.id};
+        const emailaddressInput = document.getElementById("email");
+        const emailaddress = emailaddressInput.value;
+
+        const response = await fetch(\`/user/\${userId}\`, {
+            method: 'DELETE',
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ title: emailaddress }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.redirectUrl) {
+            alert(result.message); // 成功メッセージを表示
+            window.location.href = result.redirectUrl;
+        } else {
+            alert(result.message); // エラーメッセージを表示
+        }
+
+    });
+</script>
 `;
 
 const PRODUCT_VIEW = (user, product)=> `
