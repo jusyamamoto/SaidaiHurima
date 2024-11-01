@@ -37,6 +37,7 @@ const Users = {
     findByTweetId: `SELECT * FROM users WHERE id = (SELECT user_id FROM Product WHERE id = ?);`,
     findByEmail: `SELECT * FROM users WHERE email = ?;`,
     delete: `DELETE FROM users WHERE id = ?;`,
+    update: `UPDATE users SET name = ?, studentID = ?, faculty = ?, email = ? WHERE id = ?;`,
 };
 
 module.exports = {
