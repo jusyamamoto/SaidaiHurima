@@ -151,6 +151,7 @@ const USER_REGISTER_FORM_VIEW = () => `
 
 const USER_PRODUCT_LIST_VIEW = (user, Product) => `
 <h1 class="title">${user.name}さんの商品一覧</h1>
+<button id="put" type="button" onclick="location.href='/user/${user.id}/change'">ユーザー情報の変更</button>
 <div class="Product-list">
     ${Product
       .map((Product) => `<div class="Product">${Product.content}</div>`)
@@ -192,6 +193,22 @@ const USER_PRODUCT_LIST_VIEW = (user, Product) => `
     });
 </script>
 `;
+
+const USER_CHANGE_VIEW = (user) => `
+<h1 class="title">${user.name}さんのユーザー情報変更</h1>
+<form action="/user/${user.id}/change" method="POST">
+    <label for="name">${user.name}</label>
+    <input type="text" name="name" id="name" /><br />
+    <label for="studentID">${user.studentID}</label>
+    <input type="text" name="studentID" id="studentID" /><br />
+    <label for="faculty">${user.faculty}</label>
+    <input type="text" name="faculty" id="faculty" /><br />
+    <label for="email">${user.email}</label>
+    <input type="text" name="email" id="email" /><br />
+    <button type="submit">登録</button>
+</form>
+`;
+
 
 const PRODUCT_VIEW = (user, product)=> `
 <div class="container">
@@ -251,6 +268,7 @@ module.exports = {
     PRODUCT_LIST_VIEW,
     USER_REGISTER_FORM_VIEW,
     USER_PRODUCT_LIST_VIEW,
+    USER_CHANGE_VIEW,
     PRODUCT_VIEW,
     TOP_VIEW, 
     SEARCH_FORM_VIEW,//検索ページの追加

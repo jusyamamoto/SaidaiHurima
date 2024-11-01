@@ -307,6 +307,68 @@ app.delete("/user/:id", async (c) => {
     return c.json({ message: "アカウントが削除されました", redirectUrl: "/" }, 200);
 });
 
+app.get("/user/:id/change", async (c) => {
+    const userId = c.req.param("id");
+
+    const user = await new Promise((resolve) => {
+        db.get(queries.Users.findById, userId, (err, row) => {
+            resolve(row);
+        });
+    });
+
+    if (!user) {
+        return c.notFound();
+    }
+
+    const userChangeView = templates.USER_CHANGE_VIEW(user);
+    const response = templates.HTML(userChangeView);
+
+    return c.html(response);
+});
+
+// ユーザー情報変更を処理するエンドポイント
+app.post("/user/:id/change", async (c) => {
+    const userId = c.req.param("id");
+    const body = await c.req.parseBody();
+
+    await new Promise((resolve) => {
+        db.run(queries.Users.update, body.name, body.studentID, body.faculty, body.email, userId, function(err) {
+            resolve();
+        });
+    });
+
+    return c.redirect(`/user/${userId}`);
+});
+
+// ユーザーの商品一覧を表示するエンドポイント
+app.get("/user/:id", async (c) => {
+    const userId = c.req.param("id");
+
+    const user = await new Promise((resolve) => {
+        db.get(queries.Users.findById, userId, (err, row) => {
+            resolve(row);
+        });
+    });
+
+    if (!user) {
+        return c.notFound();
+    }
+
+    const Product = await new Promise((resolve) => {
+        db.all(queries.Product.findByUserId, userId, (err, rows) => {
+            resolve(rows);
+        });
+    });
+
+    const userProductList = templates.USER_PRODUCT_LIST_VIEW(user, Product);
+    const response = templates.HTML(userProductList);
+
+    return c.html(response);
+});
+
+
+
+
 app.use("/static/*", serveStatic({ root: "./" }));
 
 serve(app);
