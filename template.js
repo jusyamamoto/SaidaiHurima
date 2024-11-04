@@ -194,6 +194,8 @@ const USER_PRODUCT_LIST_VIEW = (user, Product) => `
 </script>
 `;
 
+
+//ユーザー情報の変更ページ
 const USER_CHANGE_VIEW = (user) => `
 <h1 class="title">${user.name}さんのユーザー情報変更</h1>
 <form action="/user/${user.id}/change" method="POST">
@@ -230,6 +232,9 @@ const PRODUCT_VIEW = (user, product)=> `
     <input type="text" id="email" placeholder="メールアドレスを入力">
     <button id="deleteButton">削除</button>
 </div>
+<div>
+    <button  type="button" onclick="location.href='/product/${product.id}/change'">商品情報の変更</button>
+</div>
 <script>
     document.getElementById('deleteButton').addEventListener('click', async () => {
         const productId = ${product.id};
@@ -262,9 +267,44 @@ const PRODUCT_VIEW = (user, product)=> `
 </script>
 `;
 
+//商品情報の変更
+const PRODUCT_CHANGE_FORM_VIEW = (user, product) => `
+<h1 class="title">商品情報変更</h1>
+<div id="message"></div> <!-- メッセージ表示用のエリア -->
+<form action="/product/${product.id}/change" method="POST" id="productForm">
+    <label for="content">商品名</label>
+    <input type="text" name="content" id="content" value="${product.content}" required />
+    
+    <label for="price">値段</label>
+    <input type="text" name="price" id="price" value="${product.price}" required />
+    
+    <label for="faculty">学部</label>
+    <select name="faculty" id="faculty" required>
+        <option value="工学部" ${product.faculty === '工学部' ? 'selected' : ''}>工学部</option>
+        <option value="理学部" ${product.faculty === '理学部' ? 'selected' : ''}>理学部</option>
+    </select>
+
+    <label for="department">学科</label>
+    <select name="department" id="department" required>
+        <option value="機械工学科" ${product.department === '機械工学科' ? 'selected' : ''}>機械工学科</option>
+        <option value="情報工学科" ${product.department === '情報工学科' ? 'selected' : ''}>情報工学科</option>
+        <option value="環境社会学科" ${product.department === '環境社会学科' ? 'selected' : ''}>環境社会学科</option>
+        <option value="数学科" ${product.department === '数学科' ? 'selected' : ''}>数学科</option>
+        <option value="物理科" ${product.department === '物理科' ? 'selected' : ''}>物理科</option>
+    </select>
+
+    <label for="email">メールアドレス</label>
+    <input type="email" name="email" id="email" value="${user.email}" required />
+    
+    <button type="submit">変更</button>
+</form>
+`;
+
+
 module.exports = {
     HTML,
     PRODUCT_REGISTER_FORM_VIEW,
+    PRODUCT_CHANGE_FORM_VIEW,
     PRODUCT_LIST_VIEW,
     USER_REGISTER_FORM_VIEW,
     USER_PRODUCT_LIST_VIEW,
