@@ -443,6 +443,8 @@ app.get("/user/:id", async (c) => {
 
 app.use("/static/*", serveStatic({ root: "./" }));
 
+app.use("/img/*", serveStatic({ root: "./" }));
+
 serve(app);
 
 process.stdin.on("data", (data) => {

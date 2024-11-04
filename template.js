@@ -1,4 +1,6 @@
-const HTML = (body) => `
+const { html } = require("hono/html");
+
+const HTML = (body) => html`
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -14,7 +16,7 @@ const HTML = (body) => `
 `;
 
 //検索を追加
-const TOP_VIEW = () => `
+const TOP_VIEW = () => html`
 <h1 class="title">Saidai Hurima</h1>
 <p>このサイトでは、商品を出品・購入できます。以下のリンクから利用可能な機能にアクセスしてください。</p>
 <ul>
@@ -25,7 +27,7 @@ const TOP_VIEW = () => `
 </ul>
 `;
 
-const PRODUCT_REGISTER_FORM_VIEW = () => `
+const PRODUCT_REGISTER_FORM_VIEW = () => html`
 <h1 class="title">商品出品</h1>
 <div id="message"></div> <!-- メッセージ表示用のエリア -->
 <form action="/sell" method="POST" id="productForm">
@@ -84,7 +86,7 @@ const PRODUCT_REGISTER_FORM_VIEW = () => `
 
 
 //商品一覧のhtmlを追加
-const PRODUCT_LIST_VIEW = (Product) => `
+const PRODUCT_LIST_VIEW = (Product) => html`
 <h1 class="title">商品一覧</h1>
 <div class="Product-list">
     ${Product
@@ -94,7 +96,7 @@ const PRODUCT_LIST_VIEW = (Product) => `
 `;
 
 // 検索フォーム
-const SEARCH_FORM_VIEW = () => `
+const SEARCH_FORM_VIEW = () => html`
 <h1 class="title">検索</h1>
 <form action="/search/results" method="GET">
     <label for="faculty">学部</label>
@@ -117,7 +119,7 @@ const SEARCH_FORM_VIEW = () => `
 `;
 
 // 検索結果
-const SEARCH_RESULT_FORM_VIEW = (products) => `
+const SEARCH_RESULT_FORM_VIEW = (products) => html`
 <h1 class="title">検索結果</h1>
 <div class="Product-list">
     ${
@@ -134,7 +136,7 @@ const SEARCH_RESULT_FORM_VIEW = (products) => `
 `;
 
 
-const USER_REGISTER_FORM_VIEW = () => `
+const USER_REGISTER_FORM_VIEW = () => html`
 <h1 class="title">ユーザー登録</h1>
 <form action="/user/register" method="POST">
     <label for="name">名前</label>
@@ -149,7 +151,7 @@ const USER_REGISTER_FORM_VIEW = () => `
 </form>
 `;
 
-const USER_PRODUCT_LIST_VIEW = (user, Product) => `
+const USER_PRODUCT_LIST_VIEW = (user, Product) => html`
 <h1 class="title">${user.name}さんの商品一覧</h1>
 <button id="put" type="button" onclick="location.href='/user/${user.id}/change'">ユーザー情報の変更</button>
 <div class="Product-list">
@@ -196,7 +198,7 @@ const USER_PRODUCT_LIST_VIEW = (user, Product) => `
 
 
 //ユーザー情報の変更ページ
-const USER_CHANGE_VIEW = (user) => `
+const USER_CHANGE_VIEW = (user) => html`
 <h1 class="title">${user.name}さんのユーザー情報変更</h1>
 <form action="/user/${user.id}/change" method="POST">
     <label for="name">${user.name}</label>
@@ -212,7 +214,7 @@ const USER_CHANGE_VIEW = (user) => `
 `;
 
 
-const PRODUCT_VIEW = (user, product)=> `
+const PRODUCT_VIEW = (user, product)=> html`
 <div class="container">
     <div class="picture">
         <img src="sample.png" alt="サンプル">
@@ -268,7 +270,7 @@ const PRODUCT_VIEW = (user, product)=> `
 `;
 
 //商品情報の変更
-const PRODUCT_CHANGE_FORM_VIEW = (user, product) => `
+const PRODUCT_CHANGE_FORM_VIEW = (user, product) => html`
 <h1 class="title">商品情報変更</h1>
 <div id="message"></div> <!-- メッセージ表示用のエリア -->
 <form action="/product/${product.id}/change" method="POST" id="productForm">
