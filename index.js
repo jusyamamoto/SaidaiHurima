@@ -97,6 +97,7 @@ app.post("/sell", async (c) => {
 
 
 
+
 app.get("/product/:id", async (c) => {
     const productID = c.req.param("id");
 
@@ -170,6 +171,76 @@ app.delete("/product/:id", async (c) => {
 
     return c.json({ message: "商品が削除されました", redirectUrl: "/product" }, 200);
 });
+
+//商品情報変更のページ
+app.get("/product/:id/change", async (c) => {
+    const userId = c.req.param("id");
+    const productID = c.req.param("id");
+
+    const user = await new Promise((resolve) => {
+        db.get(queries.Users.findById, userId, (err, row) => {
+            resolve(row);
+        });
+    });
+
+    const product = await new Promise((resolve) => {
+        db.get(queries.Product.findById, productID, (err, row) => {
+            resolve(row);
+        });
+    });
+
+    if (!user) {
+        return c.notFound();
+    }
+
+    if (!product) {
+        return c.notFound();
+    }
+
+    // PRODUCT_CHANGE_FORM_VIEWを呼び出す
+    const productChangeForm = templates.PRODUCT_CHANGE_FORM_VIEW(user, product);
+
+    const response = templates.HTML(productChangeForm);
+
+    return c.html(response);
+});
+
+// 商品情報の変更
+app.post("/product/:id/change", async (c) => {
+    const productId = c.req.param("id");
+    const body = await c.req.parseBody();
+
+    // メールアドレスからユーザーIDを取得
+    const userID = await new Promise((resolve, reject) => {
+        db.get(queries.Users.findByEmail, [body.email], (err, row) => {
+            if (err) {
+                reject(err);
+            } else if (row) {
+                resolve(row.id);
+            } else {
+                resolve(null);
+            }
+        });
+    });
+
+    if (!userID) {
+        return c.json({ message: "メールアドレスが一致しません" }, 400);
+    }
+
+    await new Promise((resolve, reject) => {
+        db.run(queries.Product.update, [body.content, body.price, body.faculty, body.department, userID, productId], function(err) {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
+    });
+
+    return c.redirect(`/product/${productId}`);
+});
+
+
 
 // 検索ページの追加
 app.get("/search", async (c) => {
@@ -306,6 +377,7 @@ app.delete("/user/:id", async (c) => {
 
     return c.json({ message: "アカウントが削除されました", redirectUrl: "/" }, 200);
 });
+
 
 app.get("/user/:id/change", async (c) => {
     const userId = c.req.param("id");
