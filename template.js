@@ -30,7 +30,7 @@ const TOP_VIEW = () => html`
 const PRODUCT_REGISTER_FORM_VIEW = () => html`
 <h1 class="title">商品出品</h1>
 <div id="message"></div> <!-- メッセージ表示用のエリア -->
-<form action="/sell" method="POST" id="productForm">
+<form action="/sell" method="POST" id="productForm" enctype="multipart/form-data">
     <label for="content">商品名</label>
     <input type="text" name="content" id="content" required />
     <label for="price">値段</label>
@@ -53,6 +53,7 @@ const PRODUCT_REGISTER_FORM_VIEW = () => html`
 
     <label for="email">メールアドレス</label>
     <input type="email" name="email" id="email" required />
+    <input type="file" name="imagePath" id ="imagePath" accept="image/*">
     <button type="submit">出品</button>
 </form>
 
@@ -89,9 +90,10 @@ const PRODUCT_REGISTER_FORM_VIEW = () => html`
 const PRODUCT_LIST_VIEW = (Product) => html`
 <h1 class="title">商品一覧</h1>
 <div class="Product-list">
-    ${Product
-      .map((Product) => `<div class="Product"><a href="/product/${Product.id}">${Product.content}</div>`)
-      .join("\n")}
+    ${Product.map((Product) => html`
+      <div class="Product">
+        <a href="/product/${Product.id}">${Product.content}</a>
+      </div>`).join("\n")}
 </div>
 `;
 
@@ -217,7 +219,7 @@ const USER_CHANGE_VIEW = (user) => html`
 const PRODUCT_VIEW = (user, product)=> html`
 <div class="container">
     <div class="picture">
-        <img src="sample.png" alt="サンプル">
+        <img src= ${product.imagePath} alt="サンプル">
     </div>
     <div id="item-info">
         <p>商品名: ${product.content}</p>

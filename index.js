@@ -4,6 +4,9 @@ const templates = require("./template");
 const { serve } = require("@hono/node-server");
 const { serveStatic } = require("@hono/node-server/serve-static");
 const { Hono } = require("hono");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 
 const db = new sqlite3.Database("database.db");
 
@@ -15,9 +18,9 @@ db.serialize(() => {
     db.run(queries.Users.create, 'みかん次郎', '22te', '理学部', 'mikan@example.com', '2022-08-15 00:00:01');
     db.run(queries.Users.create, 'ぶどう三郎', '24dd', '教育学部', 'budo@example.com', '2022-08-15 00:00:02');
 
-    db.run(queries.Product.create, '離散数学', 200, '工学部', '情報工学科', 3, '2023-01-01 00:00:00');
-    db.run(queries.Product.create, '確立統計', 100, '工学部', '情報工学科', 2, '2023-01-01 00:00:01');
-    db.run(queries.Product.create, '線形ダイス', 50, '工学部', '情報工学科', 1, '2023-01-01 00:00:02');
+    db.run(queries.Product.create, '離散数学', 200, '工学部', '情報工学科', 3, '2023-01-01 00:00:00', '../img/sample.png');
+    db.run(queries.Product.create, '確立統計', 100, '工学部', '情報工学科', 2, '2023-01-01 00:00:01', '../img/sample.png');
+    db.run(queries.Product.create, '線形ダイス', 50, '工学部', '情報工学科', 1, '2023-01-01 00:00:02', '../img/sample.png');
 });
 
 const app = new Hono();
@@ -53,45 +56,64 @@ app.get("/sell", async (c) => {
     return c.html(response);
 });
 
-app.post("/sell", async (c) => {
-    const body = await c.req.parseBody();
-    const now = new Date().toISOString();
+app.post("/sell",async (c) => {
+    // リクエストのFormDataを取得
+  const formData = await c.req.formData();
+  const file = formData.get("imagePath");
 
-    // メールアドレスからユーザーIDを取得
-    const userID = await new Promise((resolve, reject) => {
-        db.get(queries.Users.findByEmail, [body.email], (err, row) => {
-            if (err) {
-                reject(err); // エラーが発生した場合
-            } else if (row) {
-                resolve(row.id); // メールアドレスに対応するユーザーIDを返す
-            } else {
-                resolve(null); // メールアドレスが見つからない場合
-            }
-        });
+  if (!file) {
+    return c.json({ message: "ファイルがアップロードされていません" }, 400);
+  }
+
+  // ファイルパスと保存先ディレクトリの設定
+  const uploadDir = path.join(__dirname, "img");
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir);
+  }
+
+  const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+  const filePath = path.join(uploadDir, uniqueSuffix + path.extname(file.name));
+
+  // ファイルを保存
+  const buffer = await file.arrayBuffer();
+  fs.writeFileSync(filePath, Buffer.from(buffer));
+
+  const body = await c.req.parseBody();
+  const now = new Date().toISOString();
+  const imagePath = `../img/${uniqueSuffix + path.extname(file.name)}`;
+
+  // ユーザーIDの取得と商品登録の処理はそのまま
+  const userID = await new Promise((resolve, reject) => {
+    db.get(queries.Users.findByEmail, [body.email], (err, row) => {
+      if (err) {
+        reject(err);
+      } else if (row) {
+        resolve(row.id);
+      } else {
+        resolve(null);
+      }
     });
+  });
 
-    if (!userID) {
-        return c.json({ message: "メールアドレスが一致しません" }, 400);
-    }
+  if (!userID) {
+    return c.json({ message: "メールアドレスが一致しません" }, 400);
+  }
 
-    // ユーザーIDが一致しない場合を確認
-    if (body.user_id && userID != body.user_id) {
-        return c.json({ message: "メールアドレスが一致しません" }, 400);
-    }
+  const productID = await new Promise((resolve, reject) => {
+    db.run(
+      queries.Product.create,
+      [body.content, body.price, body.faculty, body.department, userID, now, imagePath],
+      function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(this.lastID);
+        }
+      }
+    );
+  });
 
-    // 商品を作成
-    const productID = await new Promise((resolve, reject) => {
-        db.run(queries.Product.create, [body.content, body.price, body.faculty, body.department, userID, now], function(err) {
-            if (err) {
-                reject(err); // エラーが発生した場合
-            } else {
-                resolve(this.lastID); // 挿入された行のIDを取得
-            }
-        });
-    });
-
-    // 成功レスポンスにリダイレクトURLを含める
-    return c.json({ message: "商品が出品されました", productID, redirectUrl: `/product/${productID}` }, 200);
+  return c.json({ message: "商品が出品されました", productID, redirectUrl: `/product/${productID}` }, 200);
 });
 
 

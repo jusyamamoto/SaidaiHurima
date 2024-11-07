@@ -7,10 +7,11 @@ const Product = {
             faculty TEXT NOT NULL,
             department TEXT NOT NULL,
             user_id INTEGER NOT NULL,
-            created_at DATETIME NOT NULL
+            created_at DATETIME NOT NULL,
+            imagePath TEXT NOT NULL
         );
     `,
-    create: `INSERT INTO Product (content, price, faculty, department, user_id, created_at) VALUES (?, ?, ?, ?, ?, ?);`,
+    create: `INSERT INTO Product (content, price, faculty, department, user_id, created_at, imagePath) VALUES (?, ?, ?, ?, ?, ?, ?);`,
     findAll: `SELECT * FROM Product;`,
     findById: `SELECT * FROM Product WHERE id = ?;`,
     findByUserId: `SELECT * FROM Product WHERE user_id = ?;`,
