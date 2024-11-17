@@ -17,14 +17,16 @@ const HTML = (body) => html`
 
 //検索を追加
 const TOP_VIEW = () => html`
-<h1 class="title">Saidai Hurima</h1>
-<p>このサイトでは、商品を出品・購入できます。以下のリンクから利用可能な機能にアクセスしてください。</p>
-<ul>
-    <li><a href="/sell">商品出品</a></li>
-    <li><a href="/product">商品一覧</a></li>
-    <li><a href="/user/register">ユーザー登録</a></li>
-    <li><a href="/search">検索</a></li>  
-</ul>
+<div class="main_title">
+    <h1 class="title1">埼大フリマ</h1>
+    <p class="sub_title">このサイトでは、商品を出品・購入できます。<br>以下のリンクから利用可能な機能にアクセスしてください。</p>
+</div>
+<div class="button-container">
+    <a href="/sell" class="button">商品出品</a>
+    <a href="/product" class="button">商品一覧</a>
+    <a href="/user/register" class="button">ユーザー登録</a>
+    <a href="/search" class="button">検索</a>
+</div>
 `;
 
 const PRODUCT_REGISTER_FORM_VIEW = () => html`
