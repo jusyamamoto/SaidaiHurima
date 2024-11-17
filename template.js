@@ -95,7 +95,7 @@ const PRODUCT_LIST_VIEW = (Product) => html`
     ${Product.map((Product) => html`
       <div class="Product">
         <a href="/product/${Product.id}">${Product.content}</a>
-      </div>`).join("\n")}
+      </div>`)}
 </div>
 `;
 
@@ -133,7 +133,7 @@ const SEARCH_RESULT_FORM_VIEW = (products) => html`
                     <a href="/product/${product.id}">${product.content}</a>
                     <p>価格: ${product.price} 円</p>
                 </div>
-            `).join("\n")
+            `)
             : '<p>該当する商品が見つかりませんでした。</p>'
     }
 </div>
@@ -161,7 +161,7 @@ const USER_PRODUCT_LIST_VIEW = (user, Product) => html`
 <div class="Product-list">
     ${Product
       .map((Product) => `<div class="Product">${Product.content}</div>`)
-      .join("\n")}
+      }
 </div>
 <div>
     <label for="email">アカウントを削除するにはメールアドレスを入力してください</label>
