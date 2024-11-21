@@ -306,6 +306,47 @@ const PRODUCT_CHANGE_FORM_VIEW = (user, product) => html`
 </form>
 `;
 
+const LOGIN_VIEW = () => html`
+<h1>ログイン</h1>
+<div>
+    <div id="message"></div> <!-- メッセージ表示用のエリア -->
+    <input type="text" id="email" placeholder="メールアドレス" required />
+    <input type="text" id="password" placeholder="パスワード"  required />
+    <button id="submit", type="button">ログイン</button>
+</div>
+<script>
+    document.getElementById('submit').addEventListener('click', async () => {
+        const emailaddressInput = document.getElementById("email");
+        const emailaddress = emailaddressInput.value.trim();
+        const passwordInput = document.getElementById("password");
+        const pass = passwordInput.value.trim();
+
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ 
+                email: emailaddress, 
+                password: pass 
+            }),
+        });
+
+        const result = await response.json();
+        const messageDiv = document.getElementById('message');
+
+        if (response.ok && result.redirectUrl) {
+            window.location.href = result.redirectUrl; // リダイレクト
+        } else {
+            messageDiv.innerText = result.message; // エラーメッセージを表示
+            messageDiv.style.color = 'red';
+        }
+
+    });
+</script>
+
+`;
+
 
 module.exports = {
     HTML,
