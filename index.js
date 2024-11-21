@@ -16,14 +16,6 @@ const db = new sqlite3.Database("database.db");
 db.serialize(() => {
     db.run(queries.Product.createTable);
     db.run(queries.Users.createTable);
-
-    db.run(queries.Users.create, 'りんご太郎', '23TI', '工学部', 'apple@example.com', '2022-08-15 00:00:00');
-    db.run(queries.Users.create, 'みかん次郎', '22te', '理学部', 'mikan@example.com', '2022-08-15 00:00:01');
-    db.run(queries.Users.create, 'ぶどう三郎', '24dd', '教育学部', 'budo@example.com', '2022-08-15 00:00:02');
-
-    db.run(queries.Product.create, '離散数学', 200, '工学部', '情報工学科', 3, '2023-01-01 00:00:00', '../img/sample.png');
-    db.run(queries.Product.create, '確立統計', 100, '工学部', '情報工学科', 2, '2023-01-01 00:00:01', '../img/sample.png');
-    db.run(queries.Product.create, '線形ダイス', 50, '工学部', '情報工学科', 1, '2023-01-01 00:00:02', '../img/sample.png');
 });
 
 const app = new Hono();
@@ -315,16 +307,34 @@ app.get("/user/register", async (c) => {
 });
 
 app.post("/user/register", async (c) => {
-    const body = await c.req.parseBody();
+    const body = await c.req.json();
     const now = new Date().toISOString();
-
-    const userID = await new Promise((resolve) => {
-        db.run(queries.Users.create, body.name, body.studentID, body.faculty, body.email, now, function(err) {
-            resolve(this.lastID);
+    if(!body.name||!body.studentID||!body.faculty||!body.email||!body.password){
+        return c.json({ message: "入力されていない欄があります" }, 400);
+    }
+    try{
+        const hashedPassword = await bcrypt.hash(body.password, 10); //パスワードをハッシュ化
+        const stmt = db.prepare(queries.Users.create);
+        const createdUserId = await new Promise((resolve, reject) => {
+            stmt.run([body.name, body.studentID, body.faculty, body.email, hashedPassword, now], function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(this.lastID);
+                }
+            });
         });
-    });
-
-    return c.redirect(`/user/${userID}`);
+        const sessionID = Math.random().toString(36).slice(-8); // セッションIDを生成
+        sessionMap.set(sessionID, createdUserId); // セッションIDとユーザIDを紐付ける
+        setCookie(c, "sessionID", sessionID, {
+            expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // 1週間後に削除
+            httpOnly: true, // クライアント側からアクセスできないようにする
+            SameSite: "Strict", // クロスサイトリクエストを防ぐ
+        });
+        return c.json({ message: "", redirectUrl: "/mypage" }, 200);
+    } catch (err) {
+        return c.json({ message: "既に登録されているメールアドレスです" }, 400);
+    }
 });
 
 app.get("/user/:id", async (c) => {
@@ -473,7 +483,7 @@ app.get("/login", async(c) => {
     return c.html(response);
 });
 
-app.post("/login", async(C) => {
+app.post("/login", async(c) => {
   const body = await c.req.json();
   if (!body.email || !body.password) {
     return c.json({ message: "メールアドレスまたはパスワードが未入力です" }, 400);
@@ -509,6 +519,45 @@ app.post("/login", async(C) => {
     return c.json({ message: "エラー" }, 400);
   }
 
+});
+
+app.get("/logout", (c) => {
+    const sessionID = getCookie(c, "sessionID");
+    sessionMap.delete(sessionID); // セッションIDを削除
+    deleteCookie(c, "sessionID"); // クッキーを削除
+    return c.redirect("/");
+});
+
+app.get("/mypage", async(c) => {
+    //ログインしているか判断するための処理を含む
+    const sessionID = getCookie(c, "sessionID");
+    const userID = sessionMap.get(sessionID);
+
+    if (userID) {
+        try{
+        // ログインしている場合、マイページに移動
+        const user = await new Promise((resolve, reject) => {
+            db.get(queries.Users.findById, [userID], (err, row) => {
+              if (err) {
+                console.error("データベース取得エラー:", err);
+                reject(err);
+              } else {
+                resolve(row);
+              }
+            })
+        })
+        console.log("取得したユーザー情報:", user);
+        const mypageView = templates.MYPAGE_VIEW(user);
+        const response = templates.HTML(mypageView);
+        return c.html(response);
+        }catch(err){
+            console.error("データベースエラー:", err);
+            return c.json({ message: "データベースエラーが発生しました。" }, 500);
+        }
+    } else {
+        // ログインしていない場合、ログインページへリダイレクト 
+        return c.redirect(`/login`);        
+    }
 });
 
 
