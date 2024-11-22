@@ -26,6 +26,8 @@ const TOP_VIEW = () => html`
     <a href="/product" class="button">商品一覧</a>
     <a href="/user/register" class="button">ユーザー登録</a>
     <a href="/search" class="button">検索</a>
+    <a href="/login" class="button">ログイン</a>
+    <a href="/mypage" class="button">マイページ(ログイン必須)</a>
 </div>
 `;
 
@@ -142,17 +144,58 @@ const SEARCH_RESULT_FORM_VIEW = (products) => html`
 
 const USER_REGISTER_FORM_VIEW = () => html`
 <h1 class="title">ユーザー登録</h1>
-<form action="/user/register" method="POST">
+    <div id="message"></div> <!-- メッセージ表示用のエリア -->
     <label for="name">名前</label>
-    <input type="text" name="name" id="name" />
+    <input type="text" name="name" id="name" required />
     <label for="studentID">学籍番号</label>
-    <input type="text" name="studentID" id="studentID" />
+    <input type="text" name="studentID" id="studentID" required />
     <label for="faculty">学部</label>
-    <input type="text" name="faculty" id="faculty" />
+    <input type="text" name="faculty" id="faculty" required />
     <label for="email">メールアドレス</label>
-    <input type="email" name="email" id="email" />
-    <button type="submit">登録</button>
-</form>
+    <input type="email" name="email" id="email" required />
+    <label for="password">パスワード</label>
+    <input type="text" name="password" id="password" required />
+    <button type="button" id="submit">登録</button>
+
+<script>
+    document.getElementById('submit').addEventListener('click', async () => {
+        const usernameInput = document.getElementById("name");
+        const username = usernameInput.value;
+        const useridInput = document.getElementById("studentID");
+        const userid = useridInput.value;
+        const userfacultyInput = document.getElementById("faculty");
+        const userfaculty = userfacultyInput.value;
+        const emailaddressInput = document.getElementById("email");
+        const emailaddress = emailaddressInput.value.trim();
+        const passwordInput = document.getElementById("password");
+        const pass = passwordInput.value.trim();
+
+        const response = await fetch('/user/register', {
+            method: 'POST',
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                name: username,
+                studentID: userid,
+                faculty: userfaculty,  
+                email: emailaddress, 
+                password: pass 
+            }),
+        });
+
+        const result = await response.json();
+        const messageDiv = document.getElementById('message');
+
+        if (response.ok && result.redirectUrl) {
+            window.location.href = result.redirectUrl; // リダイレクト
+        } else {
+            messageDiv.innerText = result.message; // エラーメッセージを表示
+            messageDiv.style.color = 'red';
+        }
+
+    });
+</script>
 `;
 
 const USER_PRODUCT_LIST_VIEW = (user, Product) => html`
@@ -306,6 +349,51 @@ const PRODUCT_CHANGE_FORM_VIEW = (user, product) => html`
 </form>
 `;
 
+const LOGIN_VIEW = () => html`
+<h1>ログイン</h1>
+<div>
+    <div id="message"></div> <!-- メッセージ表示用のエリア -->
+    <input type="text" id="email" placeholder="メールアドレス" required />
+    <input type="text" id="password" placeholder="パスワード"  required />
+    <button id="login", type="button">ログイン</button>
+</div>
+<script>
+    document.getElementById('login').addEventListener('click', async () => {
+        const emailaddressInput = document.getElementById("email");
+        const emailaddress = emailaddressInput.value.trim();
+        const passwordInput = document.getElementById("password");
+        const pass = passwordInput.value.trim();
+
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+            "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ 
+                email: emailaddress, 
+                password: pass 
+            }),
+        });
+
+        const result = await response.json();
+        const messageDiv = document.getElementById('message');
+
+        if (response.ok && result.redirectUrl) {
+            window.location.href = result.redirectUrl; // リダイレクト
+        } else {
+            messageDiv.innerText = result.message; // エラーメッセージを表示
+            messageDiv.style.color = 'red';
+        }
+
+    });
+</script>
+
+`;
+const MYPAGE_VIEW = (user) => html`
+<h1>${user.name}さんのマイページ</h1>
+<a href="/logout">ログアウト</a>
+`;
+
 
 module.exports = {
     HTML,
@@ -318,5 +406,7 @@ module.exports = {
     PRODUCT_VIEW,
     TOP_VIEW, 
     SEARCH_FORM_VIEW,//検索ページの追加
-    SEARCH_RESULT_FORM_VIEW // 検索結果ページの追加
+    SEARCH_RESULT_FORM_VIEW, // 検索結果ページの追加
+    LOGIN_VIEW,
+    MYPAGE_VIEW
 };

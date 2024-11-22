@@ -29,11 +29,12 @@ const Users = {
             name TEXT NOT NULL,
             studentID TEXT NOT NULL,
             faculty TEXT NOT NULL,
-            email TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            hashed_password TEXT NOT NULL,
             created_at DATETIME NOT NULL
         );
     `,
-    create: `INSERT INTO users (name, studentID, faculty, email, created_at) VALUES (?, ?, ?, ?, ?);`,
+    create: `INSERT INTO users (name, studentID, faculty, email, hashed_password, created_at) VALUES (?, ?, ?, ?, ?, ?);`,
     findAll: `SELECT * FROM users;`,
     findById: `SELECT * FROM users WHERE id = ?;`,
     findByTweetId: `SELECT * FROM users WHERE id = (SELECT user_id FROM Product WHERE id = ?);`,
