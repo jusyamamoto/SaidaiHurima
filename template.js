@@ -17,6 +17,7 @@ const HTML = (body) => html`
 
 //検索を追加
 const TOP_VIEW = () => html`
+<link rel="stylesheet" href="static/top-page.css">
 <div class="main_title">
     <h1 class="title1">埼大フリマ</h1>
     <p class="sub_title">このサイトでは、商品を出品・購入できます。<br>以下のリンクから利用可能な機能にアクセスしてください。</p>
@@ -261,29 +262,42 @@ const USER_CHANGE_VIEW = (user) => html`
 `;
 
 
+//商品情報
 const PRODUCT_VIEW = (user, product)=> html`
+<link rel="stylesheet" href="/static/product-info.css">
 <div class="container">
-    <div class="picture">
-        <img src= ${product.imagePath} alt="サンプル">
-    </div>
-    <div id="item-info">
-        <p>商品名: ${product.content}</p>
-        <p>学部: ${product.faculty}</p>
-        <p>学科: ${product.department}</p>
-        <p>値段: ${product.price}円</p>
-        <p>出品者: ${user.name}</p>
-        <p>出品日: ${product.created_at}</p>
-    </div>
+  <div class="picture">
+    <img src="${product.imagePath}" alt="サンプル">
+  </div>
+  <div class="product-info">
+  <h1>${product.content}</h1>
+  <table>
+    <tr>
+      <th>価格：${product.price}円</th>
+    </tr>
+    <tr>
+      <th>学部：${product.department}</th>
+    </tr>
+    <tr>
+      <th>学科：${product.faculty}</th>
+    </tr>
+    <tr>
+      <th>出品者：${user.name}</th>
+    </tr>
+    <tr>
+      <th>出品日：${product.created_at}</th>
+    </tr>
+  </table>
 </div>
-<div>
+</div>
+<!--デザインの関係でコメントアウト中・・・中村
     <label for="email">削除するにはメールアドレスを入力してください</label>
-    <div id="message"></div> <!-- メッセージ表示用のエリア -->
-    <input type="text" id="email" placeholder="メールアドレスを入力">
+    <div id="message"></div> メッセージ表示用のエリア
+    <input type="email" id="email" placeholder="メールアドレスを入力">
     <button id="deleteButton">削除</button>
-</div>
-<div>
     <button  type="button" onclick="location.href='/product/${product.id}/change'">商品情報の変更</button>
-</div>
+-->
+
 <script>
     document.getElementById('deleteButton').addEventListener('click', async () => {
         const productId = ${product.id};
