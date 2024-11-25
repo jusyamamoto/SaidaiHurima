@@ -3,6 +3,21 @@ body {
   background-color: #edf3f6;
 }
 
+
+header {
+  background-color: #3f8ce4; /* 背景色を設定（青色） */
+  color: white; /* テキストの色を白に設定 */
+  padding: 10px 20px; /* 上下10px、左右20pxの余白を設定 */
+  text-align: center;
+}
+
+header a {
+  text-decoration: none; /* リンクの下線を削除 */
+  color: white; /* リンクの文字色を白に設定 */
+  font-size: 18px; /* フォントサイズを設定 */
+  font-weight: bold; /* 太字に設定 */
+}
+
 .title {
   font-size: 60px;
   text-align: center;
@@ -93,4 +108,23 @@ button[type="sell"]:hover {
   display: flex;
   flex-direction: column;
   justify-content: center; /* テキストを中央揃えにしたい場合 */
+}
+
+.login{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.user-regi{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
 }
