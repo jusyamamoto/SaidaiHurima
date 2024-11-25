@@ -88,69 +88,9 @@ button[type="sell"]:hover {
   gap: 20px; /* 写真と情報の間のスペースを調整 */
 }
 
-.picture img {
-  max-width: 200px; /* 画像の最大幅を設定 */
-  height: auto; /* アスペクト比を保ったまま高さを自動調整 */
-}
 
 #item-info {
   display: flex;
   flex-direction: column;
   justify-content: center; /* テキストを中央揃えにしたい場合 */
-}
-
-
-/*トップページ*/
-.main_title {
-  height: 250px;
-  width: 60%;
-  background: linear-gradient(-45deg, #0585E8, #052369);
-  border-radius: 30px;
-  margin: 30px auto;
-  display: flex;
-  flex-direction: column; /* 縦に配置 */
-  align-items: center; /* 中央配置 */
-  color: #fff;
-  padding: 30px 0; /* 上下の余白を追加 */
-}
-
-.title1 {
-  font-size: 60px;
-  margin: 50px,0; /* デフォルトのマージンをリセット */
-}
-
-.sub_title {
-  margin-bottom: 50px; /* タイトルとの間に余白を追加 */
-  text-align: center; /* 中央揃え */
-}
-
-.button-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 50px;
-  margin: 50px auto; 
-  max-width: 700px; 
-}
-
-.button {
-  width: 300px;
-  height: 100px;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  text-decoration: none;
-  color: #000;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 24px;
-  border-radius: 20px;
-  transition: transform 0.2s;
-}
-
-.button:hover {
-  background-color: #f5f5f563;
-  transform: scale(1.05); 
 }
