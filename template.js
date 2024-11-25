@@ -127,6 +127,7 @@ const PRODUCT_LIST_VIEW = (Product) => html`
     ${Product.map((Product) => html`
       <div class="Product">
         <a href="/product/${Product.id}">${Product.content}</a>
+        <p>価格: ${Product.price} 円</p>
       </div>`)}
 </div>
 `;
@@ -174,6 +175,7 @@ const SEARCH_RESULT_FORM_VIEW = (products) => html`
 
 const USER_REGISTER_FORM_VIEW = () => html`
 <h1 class="title">ユーザー登録</h1>
+<div class = "user-regi">
     <div id="message"></div> <!-- メッセージ表示用のエリア -->
     <label for="name">名前</label>
     <input type="text" name="name" id="name" required />
@@ -186,7 +188,7 @@ const USER_REGISTER_FORM_VIEW = () => html`
     <label for="password">パスワード</label>
     <input type="text" name="password" id="password" required />
     <button type="button" id="submit">登録</button>
-
+</div>
 <script>
     document.getElementById('submit').addEventListener('click', async () => {
         const usernameInput = document.getElementById("name");
@@ -394,9 +396,11 @@ const PRODUCT_CHANGE_FORM_VIEW = (user, product) => html`
 
 const LOGIN_VIEW = () => html`
 <h1>ログイン</h1>
-<div>
+<div class = "login">
     <div id="message"></div> <!-- メッセージ表示用のエリア -->
+    <label for ="email">メールアドレス</label>
     <input type="text" id="email" placeholder="メールアドレス" required />
+    <label for ="password">パスワード</label>
     <input type="text" id="password" placeholder="パスワード"  required />
     <button id="login", type="button">ログイン</button>
 </div>

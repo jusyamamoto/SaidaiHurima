@@ -109,3 +109,22 @@ button[type="sell"]:hover {
   flex-direction: column;
   justify-content: center; /* テキストを中央揃えにしたい場合 */
 }
+
+.login{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+.user-regi{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
