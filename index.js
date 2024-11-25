@@ -24,10 +24,17 @@ app.use(csrf());
 
 const sessionMap = new Map();
 
-//topページを追加
 app.get("/", async (c) => {
+    
+    const topContent = templates.GATE();
+    const response = templates.HTMLfortoppage(topContent); // HTML全体の構造にTOPページのコンテンツを埋め込み
+    return c.html(response);
+});
+
+//topページを追加
+app.get("/top-page", async (c) => {
     const topContent = templates.TOP_VIEW();
-    const response = templates.HTML(topContent); // HTML全体の構造にTOPページのコンテンツを埋め込み
+    const response = templates.HTMLfortoppage(topContent); // HTML全体の構造にTOPページのコンテンツを埋め込み
     return c.html(response);
 });
 
@@ -190,7 +197,7 @@ app.delete("/product/:id", async (c) => {
         });
     });
 
-    return c.json({ message: "商品が削除されました", redirectUrl: "/product" }, 200);
+    return c.json({ message: "商品が削除されました", redirectUrl: "/mypage" }, 200);
 });
 
 //商品情報変更のページ
@@ -478,46 +485,56 @@ app.get("/user/:id", async (c) => {
 });
 
 app.get("/login", async(c) => {
-    const loginView = templates.LOGIN_VIEW();
-    const response = templates.HTML(loginView);
-    return c.html(response);
+
+    const sessionID = getCookie(c, "sessionID");
+    const userID = sessionMap.get(sessionID);
+
+    if (userID) {
+        return c.redirect(`/top-page`)
+    } else {
+        const loginView = templates.LOGIN_VIEW();
+        const response = templates.HTML(loginView);
+        return c.html(response);    
+    }
 });
 
 app.post("/login", async(c) => {
-  const body = await c.req.json();
-  if (!body.email || !body.password) {
+
+    const body = await c.req.json();
+
+    if (!body.email || !body.password) {
     return c.json({ message: "メールアドレスまたはパスワードが未入力です" }, 400);
-  }
-  try {
+    }
+    try {
     const user = await new Promise((resolve, reject) => {
-      db.get(queries.Users.findByEmail, [body.email], (err, row) => {
+        db.get(queries.Users.findByEmail, [body.email], (err, row) => {
         if (err) {
-          reject(err);
+            reject(err);
         } else {
-          resolve(row);
+            resolve(row);
         }
-      });
+        });
     });
     if (!user) {
-      return c.json({ message: "メールアドレスまたはパスワードが間違っています" }, 400);
+        return c.json({ message: "メールアドレスまたはパスワードが間違っています" }, 400);
     }
 
     const isValidPassword = await bcrypt.compare(body.password, user.hashed_password);
     if (!isValidPassword) {
-      return c.json({ message: "メールアドレスまたはパスワードが間違っています" }, 400);
+        return c.json({ message: "メールアドレスまたはパスワードが間違っています" }, 400);
     }
 
     const sessionID = Math.random().toString(36).slice(-8);
     sessionMap.set(sessionID, user.id);
     setCookie(c, "sessionID", sessionID, {
-      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
-      httpOnly: true,
-      SameSite: "Strict",
+        expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+        httpOnly: true,
+        SameSite: "Strict",
     });
-    return c.json({ message: "", redirectUrl: "/mypage" }, 200);
-  } catch (err) {
+    return c.json({ message: "", redirectUrl: "/top-page" }, 200);
+    } catch (err) {
     return c.json({ message: "エラー" }, 400);
-  }
+    }
 
 });
 

@@ -10,13 +10,41 @@ const HTML = (body) => html`
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <header>
-    <a href = "/">埼大フリマ</a>
+    <a href = "/top-page">埼大フリマ</a>
 </header>
 <body>
     ${body}
 </body>
 </html>
 `;
+
+const HTMLfortoppage = (body) => html`
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>埼大フリマ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    ${body}
+</body>
+</html>
+`;
+
+const GATE = () => html`
+<link rel="stylesheet" href="static/top-page.css">
+<div class="main_title">
+    <h1 class="title1">埼大フリマ</h1>
+    <p class="sub_title">このサイトでは、商品を出品・購入できます。<br>はじめましての方はユーザー登録を行ってください。<br>ユーザー登録済みの方はログインをお願いします。</p>
+</div>
+<div class="button-container">
+    <a href="/login" class="button">ログイン</a>
+    <a href="/user/register" class="button">ユーザー登録</a>
+</div>
+`;
+
 
 //検索を追加
 const TOP_VIEW = () => html`
@@ -28,10 +56,8 @@ const TOP_VIEW = () => html`
 <div class="button-container">
     <a href="/sell" class="button">商品出品</a>
     <a href="/product" class="button">商品一覧</a>
-    <a href="/user/register" class="button">ユーザー登録</a>
     <a href="/search" class="button">検索</a>
-    <a href="/login" class="button">ログイン</a>
-    <a href="/mypage" class="button">マイページ(ログイン必須)</a>
+    <a href="/mypage" class="button">マイページ</a>
 </div>
 `;
 
@@ -134,13 +160,13 @@ const SEARCH_RESULT_FORM_VIEW = (products) => html`
 <div class="Product-list">
     ${
         products.length > 0 
-            ? products.map(product => `
+            ? products.map(product => html`
                 <div class="Product">
                     <a href="/product/${product.id}">${product.content}</a>
                     <p>価格: ${product.price} 円</p>
                 </div>
             `)
-            : '<p>該当する商品が見つかりませんでした。</p>'
+            : html`<p>該当する商品が見つかりませんでした。</p>`
     }
 </div>
 `;
@@ -414,6 +440,8 @@ const MYPAGE_VIEW = (user) => html`
 
 module.exports = {
     HTML,
+    GATE,
+    HTMLfortoppage,
     PRODUCT_REGISTER_FORM_VIEW,
     PRODUCT_CHANGE_FORM_VIEW,
     PRODUCT_LIST_VIEW,
