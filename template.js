@@ -145,19 +145,32 @@ const SEARCH_RESULT_FORM_VIEW = (products) => html`
 
 const USER_REGISTER_FORM_VIEW = () => html`
 <h1 class="title">ユーザー登録</h1>
-    <div id="message"></div> <!-- メッセージ表示用のエリア -->
-    <label for="name">名前</label>
-    <input type="text" name="name" id="name" required />
-    <label for="studentID">学籍番号</label>
-    <input type="text" name="studentID" id="studentID" required />
-    <label for="faculty">学部</label>
-    <input type="text" name="faculty" id="faculty" required />
-    <label for="email">メールアドレス</label>
-    <input type="email" name="email" id="email" required />
-    <label for="password">パスワード</label>
-    <input type="text" name="password" id="password" required />
-    <button type="button" id="submit">登録</button>
-
+<div class="form-container">
+    <div id="message" class="message-area"></div> <!-- メッセージ表示用のエリア -->
+    <form id="user-register-form">
+        <div class="form-group">
+            <label for="name">名前</label>
+            <input type="text" name="name" id="name" required />
+        </div>
+        <div class="form-group">
+            <label for="studentID">学籍番号</label>
+            <input type="text" name="studentID" id="studentID" required />
+        </div>
+        <div class="form-group">
+            <label for="faculty">学部</label>
+            <input type="text" name="faculty" id="faculty" required />
+        </div>
+        <div class="form-group">
+            <label for="email">メールアドレス</label>
+            <input type="email" name="email" id="email" required />
+        </div>
+        <div class="form-group">
+            <label for="password">パスワード</label>
+            <input type="password" name="password" id="password" required />
+        </div>
+        <button type="button" id="submit">登録</button>
+    </form>
+</div>
 <script>
     document.getElementById('submit').addEventListener('click', async () => {
         const usernameInput = document.getElementById("name");
