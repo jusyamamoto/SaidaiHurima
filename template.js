@@ -235,7 +235,7 @@ const USER_PRODUCT_LIST_VIEW = (user, Product) => html`
 <button id="put" type="button" onclick="location.href='/user/${user.id}/change'">ユーザー情報の変更</button>
 <div class="Product-list">
     ${Product
-      .map((Product) => `<div class="Product">${Product.content}</div>`)
+      .map((Product) => html`<div class="Product">${Product.content}</div>`)
       }
 </div>
 <div>
@@ -395,7 +395,7 @@ const PRODUCT_CHANGE_FORM_VIEW = (user, product) => html`
 `;
 
 const LOGIN_VIEW = () => html`
-<h1>ログイン</h1>
+<h1 class="title">ログイン</h1>
 <div class = "login">
     <div id="message"></div> <!-- メッセージ表示用のエリア -->
     <label for ="email">メールアドレス</label>
@@ -436,9 +436,42 @@ const LOGIN_VIEW = () => html`
 </script>
 
 `;
-const MYPAGE_VIEW = (user) => html`
-<h1>${user.name}さんのマイページ</h1>
+
+
+const MYPAGE_VIEW = (user , Product) => html`
+<h1 class = "title">${user.name}さんのマイページ</h1>
+<table>
+    <tr>
+      <th>学生番号：${user.studentID}円</th>
+    </tr>
+    <tr>
+      <th>学部：${user.faculty}</th>
+    </tr>
+    <tr>
+      <th>アカウント作成日：${user.created_at}</th>
+    </tr>
+</table>
 <a href="/logout">ログアウト</a>
+<button id="put" type="button" onclick="location.href='/user/${user.id}/change'">ユーザー情報の変更</button>
+<div>
+    <label for="email">アカウントを削除するにはメールアドレスを入力してください</label>
+    <div id="message"></div> <!-- メッセージ表示用のエリア -->
+    <input type="text" id="email" placeholder="メールアドレスを入力">
+    <button id="deleteButton">アカウント削除</button>
+</div>
+
+<h1 class="title">出品商品一覧</h1>
+<div class="Product-list">
+    ${Product.map((Product) => html`
+        <div class="Product">
+            <p>${Product.content}</p>
+            <button type = "botton" onclick="location.href='/product/${Product.id}/change'">編集</button>
+            <button type = "botton" onclick="location.href='/product/${Product.id}/delete'">削除</button>
+        </div>
+        `)
+    }
+</div>
+
 `;
 
 

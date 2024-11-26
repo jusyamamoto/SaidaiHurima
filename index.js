@@ -563,8 +563,16 @@ app.get("/mypage", async(c) => {
               }
             })
         })
+
+        const product = await new Promise((resolve) => {
+            db.all(queries.Product.findByUserId, user.id, (err, rows) => {
+                resolve(rows);
+            });
+        });
+
+
         console.log("取得したユーザー情報:", user);
-        const mypageView = templates.MYPAGE_VIEW(user);
+        const mypageView = templates.MYPAGE_VIEW(user,product);
         const response = templates.HTML(mypageView);
         return c.html(response);
         }catch(err){
