@@ -5,16 +5,21 @@ body {
 
 
 header {
-  background-color: #3f8ce4; /* 背景色を設定（青色） */
+  display: flex; /* Flexboxを使用 */
+  align-items: center; /* 縦方向の中央揃え */
+  height: 60px;
+  background: linear-gradient(-10deg, #0581e3, #05256c); /* 背景色を設定（青色） */
   color: white; /* テキストの色を白に設定 */
-  padding: 10px 20px; /* 上下10px、左右20pxの余白を設定 */
-  text-align: center;
+  padding: 0px 30px; /* 上下0px、左右40pxの余白を設定 */
+  border-radius: 10px;
+  box-shadow: 5px 0px 10px #1c1c1c; 
 }
 
 header a {
+  justify-content: flex-start;
   text-decoration: none; /* リンクの下線を削除 */
   color: white; /* リンクの文字色を白に設定 */
-  font-size: 18px; /* フォントサイズを設定 */
+  font-size: 30px; /* フォントサイズを設定 */
   font-weight: bold; /* 太字に設定 */
 }
 
@@ -71,7 +76,7 @@ input, textarea, select {
 }
 
 button[type="submit"] {
-  background-color: #3f8ce4;
+  background-color: #054697;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -97,12 +102,6 @@ button[type="sell"]:hover {
   background-color: #2a6cb8;
 }
 
-.container {
-  display: flex;
-  align-items: flex-start; /* 縦方向の整列（オプション） */
-  gap: 20px; /* 写真と情報の間のスペースを調整 */
-}
-
 
 #item-info {
   display: flex;
@@ -110,16 +109,7 @@ button[type="sell"]:hover {
   justify-content: center; /* テキストを中央揃えにしたい場合 */
 }
 
-.login{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 20px;
-  width: 100%;
-  max-width: 480px;
-  margin: 0 auto;
-}
-.user-regi{
+.form-group{
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -64,7 +64,7 @@ const TOP_VIEW = () => html`
 const PRODUCT_REGISTER_FORM_VIEW = () => html`
 <h1 class="title">商品出品</h1>
 <div id="message"></div> <!-- メッセージ表示用のエリア -->
-<form action="/sell" method="POST" id="productForm" enctype="multipart/form-data">
+<form action="/sell" method="POST" id="productForm" class="form-group" enctype="multipart/form-data">
     <label for="content">商品名</label>
     <input type="text" name="content" id="content" required />
     <label for="price">値段</label>
@@ -177,28 +177,24 @@ const USER_REGISTER_FORM_VIEW = () => html`
 <h1 class="title">ユーザー登録</h1>
 <div class="form-container">
     <div id="message" class="message-area"></div> <!-- メッセージ表示用のエリア -->
-    <form id="user-register-form">
-        <div class="form-group">
-            <label for="name">名前</label>
-            <input type="text" name="name" id="name" required />
-        </div>
-        <div class="form-group">
-            <label for="studentID">学籍番号</label>
-            <input type="text" name="studentID" id="studentID" required />
-        </div>
-        <div class="form-group">
-            <label for="faculty">学部</label>
-            <input type="text" name="faculty" id="faculty" required />
-        </div>
-        <div class="form-group">
-            <label for="email">メールアドレス</label>
-            <input type="email" name="email" id="email" required />
-        </div>
-        <div class="form-group">
-            <label for="password">パスワード</label>
-            <input type="password" name="password" id="password" required />
-        </div>
-        <button type="button" id="submit">登録</button>
+    <form id="user-register" class="form-group">
+
+        <label for="name">名前</label>
+        <input type="text" name="name" id="name" required />
+
+        <label for="studentID">学籍番号</label>
+        <input type="text" name="studentID" id="studentID" required />
+
+        <label for="faculty">学部</label>
+        <input type="text" name="faculty" id="faculty" required />
+
+        <label for="email">メールアドレス</label>
+        <input type="email" name="email" id="email" required />
+
+        <label for="password">パスワード</label>
+        <input type="password" name="password" id="password" required />
+
+        <button type="submit">登録</button>
     </form>
 </div>
 <script>
@@ -407,14 +403,14 @@ const PRODUCT_CHANGE_FORM_VIEW = (user, product) => html`
 `;
 
 const LOGIN_VIEW = () => html`
-<h1>ログイン</h1>
-<div class = "login">
+<h1 class="title">ログイン</h1>
+<div class = "form-group">
     <div id="message"></div> <!-- メッセージ表示用のエリア -->
     <label for ="email">メールアドレス</label>
     <input type="text" id="email" placeholder="メールアドレス" required />
     <label for ="password">パスワード</label>
     <input type="text" id="password" placeholder="パスワード"  required />
-    <button id="login", type="button">ログイン</button>
+    <button id="login", type="submit">ログイン</button>
 </div>
 <script>
     document.getElementById('login').addEventListener('click', async () => {
