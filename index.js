@@ -62,68 +62,52 @@ app.get("/sell", async (c) => {
     return c.html(response);
 });
 
-app.post("/sell",async (c) => {
-    // リクエストのFormDataを取得
-  const formData = await c.req.formData();
-  const file = formData.get("imagePath");
+app.post("/sell", async (c) => {
+    const sessionID = getCookie(c, "sessionID");
+    const userID = sessionMap.get(sessionID);
 
-  if (!file) {
-    return c.json({ message: "ファイルがアップロードされていません" }, 400);
-  }
+    if (!userID) {
+        return c.json({ message: "ログインが必要です" }, 401);
+    }
 
-  // ファイルパスと保存先ディレクトリの設定
-  const uploadDir = path.join(__dirname, "img");
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
-  }
+    const formData = await c.req.formData();
+    const file = formData.get("imagePath");
 
-  const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-  const filePath = path.join(uploadDir, uniqueSuffix + path.extname(file.name));
+    if (!file) {
+        return c.json({ message: "ファイルがアップロードされていません" }, 400);
+    }
 
-  // ファイルを保存
-  const buffer = await file.arrayBuffer();
-  fs.writeFileSync(filePath, Buffer.from(buffer));
+    const uploadDir = path.join(__dirname, "img");
+    if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir);
+    }
 
-  const body = await c.req.parseBody();
-  const now = new Date().toISOString();
-  const imagePath = `../img/${uniqueSuffix + path.extname(file.name)}`;
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const filePath = path.join(uploadDir, uniqueSuffix + path.extname(file.name));
 
-  // ユーザーIDの取得と商品登録の処理はそのまま
-  const userID = await new Promise((resolve, reject) => {
-    db.get(queries.Users.findByEmail, [body.email], (err, row) => {
-      if (err) {
-        reject(err);
-      } else if (row) {
-        resolve(row.id);
-      } else {
-        resolve(null);
-      }
+    const buffer = await file.arrayBuffer();
+    fs.writeFileSync(filePath, Buffer.from(buffer));
+
+    const body = await c.req.parseBody();
+    const now = new Date().toISOString();
+    const imagePath = `../img/${uniqueSuffix + path.extname(file.name)}`;
+
+    const productID = await new Promise((resolve, reject) => {
+        db.run(
+            queries.Product.create,
+            [body.content, body.price, body.faculty, body.department, userID, now, imagePath],
+            function (err) {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(this.lastID);
+                }
+            }
+        );
     });
-  });
 
-  if (!userID) {
-    return c.json({ message: "メールアドレスが一致しません" }, 400);
-  }
-
-  const productID = await new Promise((resolve, reject) => {
-    db.run(
-      queries.Product.create,
-      [body.content, body.price, body.faculty, body.department, userID, now, imagePath],
-      function (err) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(this.lastID);
-        }
-      }
-    );
-  });
-
-  return c.json({ message: "商品が出品されました", productID, redirectUrl: `/product/${productID}` }, 200);
+    return c.json({ message: "商品が出品されました", productID, redirectUrl: `/product/${productID}` }, 200);
 });
-
-
-
 
 
 app.get("/product/:id", async (c) => {
@@ -153,67 +137,61 @@ app.get("/product/:id", async (c) => {
     return c.html(response);
 });
 
-app.delete("/product/:id", async (c) => {
-    const productID = c.req.param("id");
-    const body = await c.req.json();
-    
-    // 商品が存在するか確認
-    const product = await new Promise((resolve) => {
-        db.get(queries.Product.findById, productID, (err, row) => {
-            resolve(row);
+app.delete('/mypage/product', async (c) => {
+    const { productID } = await c.req.json();
+    console.log('Received productID:', productID); // デバッグログ
+
+    try {
+        await new Promise((resolve, reject) => {
+            db.run(queries.Product.delete, productID, function(err) {
+                if (err) {
+                    console.error('Error executing query:', err); // デバッグログ
+                    reject(err);
+                } else {
+                    console.log('Query executed successfully'); // デバッグログ
+                    resolve();
+                }
+            });
         });
-    });
 
-    if (!product) {
-        return c.json({ message: "商品が存在しません" }, 404);
+        return c.json({ message: '商品が削除されました', redirectUrl: '/mypage' }, 200);
+    } catch (error) {
+        console.error('Error deleting product:', error);
+        return c.json({ message: '商品を削除できませんでした', error: error.message }, 500);
     }
-
-    // メールアドレスからユーザーIDを取得
-    const userID = await new Promise((resolve, reject) => {
-        db.get(queries.Users.findByEmail, [body.title], (err, row) => {
-            if (err) {
-                reject(err); // エラーが発生した場合
-            } else if (row) {
-                resolve(row.id); // メールアドレスに対応するユーザーIDを返す
-            } else {
-                resolve(null); // メールアドレスが見つからない場合
-            }
-        });
-    });
-
-    if (!userID) {
-        return c.json({ message: "メールアドレスが一致しません" }, 400);
-    }
-
-    //ユーザーIDが一致しないとき
-    if(userID != product.user_id){
-        return c.json({ message: "メールアドレスが一致しません" }, 400);
-    }
-
-    //商品を削除
-    await new Promise((resolve) => {
-        db.run(queries.Product.delete, productID, function(err) {
-            resolve();
-        });
-    });
-
-    return c.json({ message: "商品が削除されました", redirectUrl: "/mypage" }, 200);
 });
 
 //商品情報変更のページ
 app.get("/product/:id/change", async (c) => {
-    const userId = c.req.param("id");
     const productID = c.req.param("id");
 
-    const user = await new Promise((resolve) => {
-        db.get(queries.Users.findById, userId, (err, row) => {
-            resolve(row);
+    const product = await new Promise((resolve, reject) => {
+        db.get(queries.Product.findById, productID, (err, row) => {
+            if (err) {
+                console.error("データベース取得エラー:", err);
+                reject(err);
+            } else {
+                resolve(row);
+            }
         });
     });
 
-    const product = await new Promise((resolve) => {
-        db.get(queries.Product.findById, productID, (err, row) => {
-            resolve(row);
+    if (!product) {
+        return c.notFound();
+    }
+
+    // ログインしているユーザー情報を取得
+    const sessionID = getCookie(c, "sessionID");
+    const userID = sessionMap.get(sessionID);
+
+    const user = await new Promise((resolve, reject) => {
+        db.get(queries.Users.findById, userID, (err, row) => {
+            if (err) {
+                console.error("データベース取得エラー:", err);
+                reject(err);
+            } else {
+                resolve(row);
+            }
         });
     });
 
@@ -221,43 +199,24 @@ app.get("/product/:id/change", async (c) => {
         return c.notFound();
     }
 
-    if (!product) {
-        return c.notFound();
-    }
-
     // PRODUCT_CHANGE_FORM_VIEWを呼び出す
-    const productChangeForm = templates.PRODUCT_CHANGE_FORM_VIEW(user, product);
-
+    const productChangeForm = PRODUCT_CHANGE_FORM_VIEW(user, product);
     const response = templates.HTML(productChangeForm);
 
     return c.html(response);
 });
+
+
 
 // 商品情報の変更
 app.post("/product/:id/change", async (c) => {
     const productId = c.req.param("id");
     const body = await c.req.parseBody();
 
-    // メールアドレスからユーザーIDを取得
-    const userID = await new Promise((resolve, reject) => {
-        db.get(queries.Users.findByEmail, [body.email], (err, row) => {
-            if (err) {
-                reject(err);
-            } else if (row) {
-                resolve(row.id);
-            } else {
-                resolve(null);
-            }
-        });
-    });
-
-    if (!userID) {
-        return c.json({ message: "メールアドレスが一致しません" }, 400);
-    }
-
     await new Promise((resolve, reject) => {
-        db.run(queries.Product.update, [body.content, body.price, body.faculty, body.department, userID, productId], function(err) {
+        db.run(queries.Product.update, [body.content, body.price, body.faculty, body.department, productId], function(err) {
             if (err) {
+                console.error("データベース更新エラー:", err);
                 reject(err);
             } else {
                 resolve();
@@ -265,9 +224,8 @@ app.post("/product/:id/change", async (c) => {
         });
     });
 
-    return c.redirect(`/product/${productId}`);
+    return c.redirect(`/mypage`);
 });
-
 
 
 // 検索ページの追加
@@ -370,60 +328,46 @@ app.get("/user/:id", async (c) => {
     return c.html(response);
 });
 
-app.delete("/user/:id", async (c) => {
-    const productID = c.req.param("id");
-    const body = await c.req.json();
-    
-    // 商品が存在するか確認
-    const user = await new Promise((resolve) => {
-        db.get(queries.Users.findById, productID, (err, row) => {
-            resolve(row);
-        });
-    });
-
-    if (!user) {
-        return c.json({ message: "アカウントが存在しません" }, 404);
-    }
-
-    // メールアドレスからユーザーIDを取得
-    const userID = await new Promise((resolve, reject) => {
-        db.get(queries.Users.findByEmail, [body.title], (err, row) => {
-            if (err) {
-                reject(err); // エラーが発生した場合
-            } else if (row) {
-                resolve(row.id); // メールアドレスに対応するユーザーIDを返す
-            } else {
-                resolve(null); // メールアドレスが見つからない場合
-            }
-        });
-    });
+app.delete("/mypage/account", async (c) => {
+    const sessionID = getCookie(c, "sessionID");
+    const userID = sessionMap.get(sessionID);
 
     if (!userID) {
-        return c.json({ message: "メールアドレスが一致しません" }, 400);
+        return c.json({ message: "ログインされていません" }, 401);
     }
 
-    //ユーザーIDが一致しないとき
-    if(userID != user.id){
-        return c.json({ message: "メールアドレスが一致しません" }, 400);
+    try {
+        // ユーザーの出品商品を削除
+        await new Promise((resolve, reject) => {
+            db.run(queries.Product.deleteByUserId, userID, (err) => {
+                if (err) reject(err);
+                else resolve();
+            });
+        });
+
+        // ユーザーのアカウントを削除
+        await new Promise((resolve, reject) => {
+            db.run(queries.Users.delete, userID, (err) => {
+                if (err) reject(err);
+                else resolve();
+            });
+        });
+
+        // セッション削除
+        sessionMap.delete(sessionID);
+
+        return c.json(
+            { message: "アカウントが削除されました", redirectUrl: "/" },
+            200
+        );
+    } catch (err) {
+        console.error("アカウント削除エラー:", err);
+        return c.json(
+            { message: "アカウント削除中にエラーが発生しました。" },
+            500
+        );
     }
-
-    //ユーザーの商品を全て削除
-    await new Promise((resolve) => {
-        db.run(queries.Product.deleteByUserId, userID, function(err) {
-            resolve();
-        });
-    });
-
-    //アカウントを消去
-    await new Promise((resolve) => {
-        db.run(queries.Users.delete, userID, function(err) {
-            resolve();
-        });
-    });
-
-    return c.json({ message: "アカウントが削除されました", redirectUrl: "/" }, 200);
 });
-
 
 app.get("/user/:id/change", async (c) => {
     const userId = c.req.param("id");
@@ -455,7 +399,7 @@ app.post("/user/:id/change", async (c) => {
         });
     });
 
-    return c.redirect(`/user/${userId}`);
+    return c.redirect(`/mypage`);
 });
 
 // ユーザーの商品一覧を表示するエンドポイント

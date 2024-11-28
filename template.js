@@ -85,8 +85,6 @@ const PRODUCT_REGISTER_FORM_VIEW = () => html`
         <option value="物理科">物理科</option>
     </select>
 
-    <label for="email">メールアドレス</label>
-    <input type="email" name="email" id="email" required />
     <input type="file" name="imagePath" id ="imagePath" accept="image/*">
     <button type="submit">出品</button>
 </form>
@@ -319,7 +317,7 @@ const PRODUCT_VIEW = (user, product)=> html`
       <th>出品日：${product.created_at}</th>
     </tr>
   </table>
-</div>
+  </div>
 </div>
 <!--デザインの関係でコメントアウト中・・・中村
     <label for="email">削除するにはメールアドレスを入力してください</label>
@@ -442,7 +440,7 @@ const MYPAGE_VIEW = (user , Product) => html`
 <h1 class = "title">${user.name}さんのマイページ</h1>
 <table>
     <tr>
-      <th>学生番号：${user.studentID}円</th>
+      <th>学生番号：${user.studentID}</th>
     </tr>
     <tr>
       <th>学部：${user.faculty}</th>
@@ -454,10 +452,8 @@ const MYPAGE_VIEW = (user , Product) => html`
 <a href="/logout">ログアウト</a>
 <button id="put" type="button" onclick="location.href='/user/${user.id}/change'">ユーザー情報の変更</button>
 <div>
-    <label for="email">アカウントを削除するにはメールアドレスを入力してください</label>
     <div id="message"></div> <!-- メッセージ表示用のエリア -->
-    <input type="text" id="email" placeholder="メールアドレスを入力">
-    <button id="deleteButton">アカウント削除</button>
+    <button type="button" onclick="deleteAccount()">アカウント削除</button>
 </div>
 
 <h1 class="title">出品商品一覧</h1>
@@ -465,14 +461,61 @@ const MYPAGE_VIEW = (user , Product) => html`
     ${Product.map((Product) => html`
         <div class="Product">
             <p>${Product.content}</p>
-            <button type = "botton" onclick="location.href='/product/${Product.id}/change'">編集</button>
-            <button type = "botton" onclick="location.href='/product/${Product.id}/delete'">削除</button>
+            <button type = "button" onclick="location.href='/product/${Product.id}/change'">編集</button>
+            <button type = "button" onclick="deleteProduct(${Product.id})">削除</button>
         </div>
         `)
     }
 </div>
 
+<script>
+    async function deleteProduct(productID) {
+        try {
+            const response = await fetch('/mypage/product', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ productID: productID })
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert(result.message);
+                window.location.href = result.redirectUrl;
+            } else {
+                alert('商品を削除できませんでした。');
+                console.error('Error:', result.error);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('エラーが発生しました。');
+        }
+    }
+
+    async function deleteAccount() {
+        if (confirm('本当にアカウントを削除しますか？')) {
+            try {
+                const response = await fetch('/mypage/account', {
+                    method: 'DELETE',
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert(result.message);
+                    window.location.href = result.redirectUrl;
+                } else {
+                    alert('アカウント削除に失敗しました。');
+                }
+            } catch (error) {
+                console.error('エラー:', error);
+                alert('エラーが発生しました。');
+            }
+        }
+    }
+</script>
 `;
+
 
 
 module.exports = {
@@ -487,8 +530,8 @@ module.exports = {
     USER_CHANGE_VIEW,
     PRODUCT_VIEW,
     TOP_VIEW, 
-    SEARCH_FORM_VIEW,//検索ページの追加
-    SEARCH_RESULT_FORM_VIEW, // 検索結果ページの追加
+    SEARCH_FORM_VIEW,
+    SEARCH_RESULT_FORM_VIEW,
     LOGIN_VIEW,
     MYPAGE_VIEW
 };
