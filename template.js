@@ -460,7 +460,8 @@ const MYPAGE_VIEW = (user , Product) => html`
 <div class="Product-list">
     ${Product.map((Product) => html`
         <div class="Product">
-            <p>${Product.content}</p>
+            <a href="/product/${Product.id}">${Product.content}</a>
+            <p>価格: ${Product.price} 円</p>
             <button type = "button" onclick="location.href='/product/${Product.id}/change'">編集</button>
             <button type = "button" onclick="deleteProduct(${Product.id})">削除</button>
         </div>

@@ -200,7 +200,7 @@ app.get("/product/:id/change", async (c) => {
     }
 
     // PRODUCT_CHANGE_FORM_VIEWを呼び出す
-    const productChangeForm = PRODUCT_CHANGE_FORM_VIEW(user, product);
+    const productChangeForm = templates.PRODUCT_CHANGE_FORM_VIEW(user, product);
     const response = templates.HTML(productChangeForm);
 
     return c.html(response);
