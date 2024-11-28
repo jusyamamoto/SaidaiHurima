@@ -19,7 +19,7 @@ const Product = {
     findByFacultyAndDepartment: `SELECT * FROM Product WHERE faculty = ? AND department = ?;`,// 学部と学科で検索するクエリを追加
     findUserNameByProductId: `SELECT u.name FROM Users u JOIN Product p ON u.id = p.user_id WHERE p.id = ?;`, // プロダクトIDからユーザー名を取得
     deleteByUserId: `DELETE FROM Product WHERE user_id = ?;`, //特定のユーザーの商品を全消去
-    update: `UPDATE Product SET content = ?, price = ?, faculty = ?, department = ?, user_id = ? WHERE id = ?;`,
+    update: `UPDATE Product SET content = ?, price = ?, faculty = ?, department = ? WHERE id = ?;`,
 };
 
 const Users = {
