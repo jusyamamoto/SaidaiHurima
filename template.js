@@ -393,9 +393,6 @@ const PRODUCT_CHANGE_FORM_VIEW = (user, product) => html`
         <option value="物理科" ${product.department === '物理科' ? 'selected' : ''}>物理科</option>
     </select>
 
-    <label for="email">メールアドレス</label>
-    <input type="email" name="email" id="email" value="${user.email}" required />
-    
     <button type="submit">変更</button>
 </form>
 `;
