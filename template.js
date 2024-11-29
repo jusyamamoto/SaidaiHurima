@@ -236,52 +236,6 @@ const USER_REGISTER_FORM_VIEW = () => html`
 </script>
 `;
 
-const USER_PRODUCT_LIST_VIEW = (user, Product) => html`
-<h1 class="title">${user.name}さんの商品一覧</h1>
-<button id="put" type="button" onclick="location.href='/user/${user.id}/change'">ユーザー情報の変更</button>
-<div class="Product-list">
-    ${Product
-      .map((Product) => html`<div class="Product">${Product.content}</div>`)
-      }
-</div>
-<div>
-    <label for="email">アカウントを削除するにはメールアドレスを入力してください</label>
-    <div id="message"></div> <!-- メッセージ表示用のエリア -->
-    <input type="text" id="email" placeholder="メールアドレスを入力">
-    <button id="deleteButton">削除</button>
-</div>
-<script>
-    document.getElementById('deleteButton').addEventListener('click', async () => {
-        const userId = ${user.id};
-        const emailaddressInput = document.getElementById("email");
-        const emailaddress = emailaddressInput.value;
-
-        const response = await fetch(\`/user/\${userId}\`, {
-            method: 'DELETE',
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ title: emailaddress }),
-        });
-
-        const result = await response.json();
-        const messageDiv = document.getElementById('message');
-
-        if (response.ok && result.redirectUrl) {
-            messageDiv.innerText = result.message; // 成功メッセージを表示
-            messageDiv.style.color = 'green';
-            if (result.redirectUrl) {
-                setTimeout(() => window.location.href = result.redirectUrl, 1000); // リダイレクト
-            }
-        } else {
-            messageDiv.innerText = result.message; // エラーメッセージを表示
-        }
-
-    });
-</script>
-`;
-
-
 //ユーザー情報の変更ページ
 const USER_CHANGE_VIEW = (user) => html`
 <h1 class="title">${user.name}さんのユーザー情報変更</h1>
@@ -514,7 +468,6 @@ module.exports = {
     PRODUCT_CHANGE_FORM_VIEW,
     PRODUCT_LIST_VIEW,
     USER_REGISTER_FORM_VIEW,
-    USER_PRODUCT_LIST_VIEW,
     USER_CHANGE_VIEW,
     PRODUCT_VIEW,
     TOP_VIEW, 
