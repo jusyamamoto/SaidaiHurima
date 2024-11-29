@@ -281,6 +281,7 @@ const PRODUCT_VIEW = (user, product)=> html`
   </table>
   </div>
 </div>
+<button type="button" onclick="matchingbutton('${user.email}')">マッチング</button>
 <!--デザインの関係でコメントアウト中・・・中村
     <label for="email">削除するにはメールアドレスを入力してください</label>
     <div id="message"></div> メッセージ表示用のエリア
@@ -288,6 +289,11 @@ const PRODUCT_VIEW = (user, product)=> html`
     <button id="deleteButton">削除</button>
     <button  type="button" onclick="location.href='/product/${product.id}/change'">商品情報の変更</button>
 -->
+<script>
+    function matchingbutton(email){
+        alert("出品者のメールアドレスは"+email+"です");
+    }
+</script>
 `;
 
 //商品情報の変更

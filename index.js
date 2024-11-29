@@ -115,7 +115,7 @@ app.get("/product/:id", async (c) => {
 
     
     const user = await new Promise((resolve) => {
-        db.get(queries.Product.findUserNameByProductId, productID, (err, row) => {
+        db.get(queries.Product.findUserByProductId, productID, (err, row) => {
             resolve(row);
         });
     });
