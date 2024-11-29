@@ -10,9 +10,10 @@ header {
   height: 60px;
   background: linear-gradient(-10deg, #0581e3, #05256c); /* 背景色を設定（青色） */
   color: white; /* テキストの色を白に設定 */
+  margin: 10px 10px;
   padding: 0px 30px; /* 上下0px、左右40pxの余白を設定 */
   border-radius: 10px;
-  box-shadow: 5px 0px 10px #1c1c1c; 
+  box-shadow: 5px 5px 4px #424242; 
 }
 
 header a {
