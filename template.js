@@ -334,37 +334,6 @@ const PRODUCT_VIEW = (user, product)=> html`
     <button id="deleteButton">削除</button>
     <button  type="button" onclick="location.href='/product/${product.id}/change'">商品情報の変更</button>
 -->
-
-<script>
-    document.getElementById('deleteButton').addEventListener('click', async () => {
-        const productId = ${product.id};
-        const emailaddressInput = document.getElementById("email");
-        const emailaddress = emailaddressInput.value;
-
-        const response = await fetch(\`/product/\${productId}\`, {
-            method: 'DELETE',
-            headers: {
-            "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ title: emailaddress }),
-        });
-
-        const result = await response.json();
-        const messageDiv = document.getElementById('message');
-
-        if (response.ok && result.redirectUrl) {
-            messageDiv.innerText = result.message; // 成功メッセージを表示
-            messageDiv.style.color = 'green';
-            if (result.redirectUrl) {
-                setTimeout(() => window.location.href = result.redirectUrl, 1000); // リダイレクト
-            }
-        } else {
-            messageDiv.innerText = result.message; // エラーメッセージを表示
-            messageDiv.style.color = 'red';
-        }
-
-    });
-</script>
 `;
 
 //商品情報の変更
