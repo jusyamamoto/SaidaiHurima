@@ -64,7 +64,7 @@ const TOP_VIEW = () => html`
 const PRODUCT_REGISTER_FORM_VIEW = () => html`
 <h1 class="title">商品出品</h1>
 <div id="message"></div> <!-- メッセージ表示用のエリア -->
-<form action="/sell" method="POST" id="productForm" enctype="multipart/form-data">
+<form action="/sell" method="POST" id="productForm" class="form-group" enctype="multipart/form-data">
     <label for="content">商品名</label>
     <input type="text" name="content" id="content" required />
     <label for="price">値段</label>
@@ -173,19 +173,27 @@ const SEARCH_RESULT_FORM_VIEW = (products) => html`
 
 const USER_REGISTER_FORM_VIEW = () => html`
 <h1 class="title">ユーザー登録</h1>
-<div class = "user-regi">
-    <div id="message"></div> <!-- メッセージ表示用のエリア -->
-    <label for="name">名前</label>
-    <input type="text" name="name" id="name" required />
-    <label for="studentID">学籍番号</label>
-    <input type="text" name="studentID" id="studentID" required />
-    <label for="faculty">学部</label>
-    <input type="text" name="faculty" id="faculty" required />
-    <label for="email">メールアドレス</label>
-    <input type="email" name="email" id="email" required />
-    <label for="password">パスワード</label>
-    <input type="text" name="password" id="password" required />
-    <button type="button" id="submit">登録</button>
+<div class="form-container">
+    <div id="message" class="message-area"></div> <!-- メッセージ表示用のエリア -->
+    <form id="user-register" class="form-group">
+
+        <label for="name">名前</label>
+        <input type="text" name="name" id="name" required />
+
+        <label for="studentID">学籍番号</label>
+        <input type="text" name="studentID" id="studentID" required />
+
+        <label for="faculty">学部</label>
+        <input type="text" name="faculty" id="faculty" required />
+
+        <label for="email">メールアドレス</label>
+        <input type="email" name="email" id="email" required />
+
+        <label for="password">パスワード</label>
+        <input type="password" name="password" id="password" required />
+
+        <button type="submit">登録</button>
+    </form>
 </div>
 <script>
     document.getElementById('submit').addEventListener('click', async () => {
@@ -293,7 +301,7 @@ const USER_CHANGE_VIEW = (user) => html`
 
 //商品情報
 const PRODUCT_VIEW = (user, product)=> html`
-<link rel="stylesheet" href="/static/product-info.css">
+<link rel="stylesheet" href="/static/product.css">
 <div class="container">
   <div class="picture">
     <img src="${product.imagePath}" alt="サンプル">
@@ -394,13 +402,13 @@ const PRODUCT_CHANGE_FORM_VIEW = (user, product) => html`
 
 const LOGIN_VIEW = () => html`
 <h1 class="title">ログイン</h1>
-<div class = "login">
+<div class = "form-group">
     <div id="message"></div> <!-- メッセージ表示用のエリア -->
     <label for ="email">メールアドレス</label>
     <input type="text" id="email" placeholder="メールアドレス" required />
     <label for ="password">パスワード</label>
     <input type="text" id="password" placeholder="パスワード"  required />
-    <button id="login", type="button">ログイン</button>
+    <button id="login", type="submit">ログイン</button>
 </div>
 <script>
     document.getElementById('login').addEventListener('click', async () => {
@@ -437,36 +445,49 @@ const LOGIN_VIEW = () => html`
 
 
 const MYPAGE_VIEW = (user , Product) => html`
-<h1 class = "title">${user.name}さんのマイページ</h1>
-<table>
-    <tr>
-      <th>学生番号：${user.studentID}</th>
-    </tr>
-    <tr>
-      <th>学部：${user.faculty}</th>
-    </tr>
-    <tr>
-      <th>アカウント作成日：${user.created_at}</th>
-    </tr>
-</table>
-<a href="/logout">ログアウト</a>
-<button id="put" type="button" onclick="location.href='/user/${user.id}/change'">ユーザー情報の変更</button>
-<div>
-    <div id="message"></div> <!-- メッセージ表示用のエリア -->
-    <button type="button" onclick="deleteAccount()">アカウント削除</button>
-</div>
+<link rel="stylesheet" href="/static/my-page.css">
+<div class="container">
+  <h1 class="title">リンゴ太郎さんのマイページ</h1>
+  <button class="logout-btn" onclick="location.href='/logout'">ログアウト</button>
 
-<h1 class="title">出品商品一覧</h1>
-<div class="Product-list">
-    ${Product.map((Product) => html`
-        <div class="Product">
-            <a href="/product/${Product.id}">${Product.content}</a>
-            <p>価格: ${Product.price} 円</p>
-            <button type = "button" onclick="location.href='/product/${Product.id}/change'">編集</button>
-            <button type = "button" onclick="deleteProduct(${Product.id})">削除</button>
+<table>
+  <div class="account-info">
+    <h2>アカウント情報</h2>
+      <tr>
+        <th>学生番号:</th>
+        <td>${user.studentID}</td>
+      </tr>
+      <tr>
+        <th>学部:</th>
+        <td>${user.faculty}</td>
+      </tr>
+      <tr>
+        <th>アカウント作成日:</th>
+        <td>${user.created_at}</td>
+      </tr>
+    <a href="/user/${user.id}/change" class="change-btn">ユーザー情報の変更</a>
+  </div>
+
+  <div class="account-delete">
+    <h2>アカウント削除</h2>
+    <div id="message"></div>
+    <button type="button" class="delete-btn" onclick="deleteAccount()">削除</button>
+  </div>
+<table>
+
+  <h1 class="title">出品商品一覧</h1>
+  <div class="product-list">
+    ${Product.map((product) => html`
+      <div class="product">
+        <a href="/product/${product.id}">${product.content}</a>
+        <p>価格: ${product.price} 円</p>
+        <div class="product-actions">
+          <button type="button" class="edit-btn" onclick="location.href='/product/${product.id}/change'">編集</button>
+          <button type="button" class="delete-btn" onclick="deleteProduct(${product.id})">削除</button>
         </div>
-        `)
-    }
+      </div>
+    `)}
+  </div>
 </div>
 
 <script>
