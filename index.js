@@ -115,7 +115,7 @@ app.get("/product/:id", async (c) => {
 
     
     const user = await new Promise((resolve) => {
-        db.get(queries.Product.findUserNameByProductId, productID, (err, row) => {
+        db.get(queries.Product.findUserByProductId, productID, (err, row) => {
             resolve(row);
         });
     });
@@ -302,32 +302,6 @@ app.post("/user/register", async (c) => {
     }
 });
 
-app.get("/user/:id", async (c) => {
-    const userId = c.req.param("id");
-
-    const user = await new Promise((resolve) => {
-        db.get(queries.Users.findById, userId, (err, row) => {
-            resolve(row);
-        });
-    });
-
-    if (!user) {
-        return c.notFound();
-    }
-
-    const Product = await new Promise((resolve) => {
-        db.all(queries.Product.findByUserId, userId, (err, rows) => {
-            resolve(rows);
-        });
-    });
-
-    const userProductList = templates.USER_PRODUCT_LIST_VIEW(user, Product);
-
-    const response = templates.HTML(userProductList);
-
-    return c.html(response);
-});
-
 app.delete("/mypage/account", async (c) => {
     const sessionID = getCookie(c, "sessionID");
     const userID = sessionMap.get(sessionID);
@@ -400,32 +374,6 @@ app.post("/user/:id/change", async (c) => {
     });
 
     return c.redirect(`/mypage`);
-});
-
-// ユーザーの商品一覧を表示するエンドポイント
-app.get("/user/:id", async (c) => {
-    const userId = c.req.param("id");
-
-    const user = await new Promise((resolve) => {
-        db.get(queries.Users.findById, userId, (err, row) => {
-            resolve(row);
-        });
-    });
-
-    if (!user) {
-        return c.notFound();
-    }
-
-    const Product = await new Promise((resolve) => {
-        db.all(queries.Product.findByUserId, userId, (err, rows) => {
-            resolve(rows);
-        });
-    });
-
-    const userProductList = templates.USER_PRODUCT_LIST_VIEW(user, Product);
-    const response = templates.HTML(userProductList);
-
-    return c.html(response);
 });
 
 app.get("/login", async(c) => {
