@@ -192,7 +192,7 @@ const USER_REGISTER_FORM_VIEW = () => html`
         <label for="password">パスワード</label>
         <input type="password" name="password" id="password" required />
 
-        <button type="submit">登録</button>
+        <button type="submit" id="submit">登録</button>
     </form>
 </div>
 <script>
