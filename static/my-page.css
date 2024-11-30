@@ -4,54 +4,26 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #edf3f6;
-  }
-  
-  .container {
+    background-color: #f5f5f5;
+}
+
+.container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 40px;
-  }
-  
-  .title {
+}
+
+.title {
     font-size: 36px;
     text-align: center;
     margin-bottom: 30px;
-  }
-  
-  .logout-btn {
+    color: #333;
+}
+
+.logout-btn {
     display: block;
     margin-left: auto;
     margin-bottom: 20px;
-  }
-  
-  .account-info,
-  .account-delete {
-    background-color: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    margin-bottom: 40px;
-  }
-  
-  .account-info h2,
-  .account-delete h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-  
-  
-  
-  th, td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .change-btn,
-  .delete-btn {
-    display: block;
-    margin-top: 20px;
     background-color: #0077b6;
     color: white;
     border: none;
@@ -61,45 +33,86 @@ body {
     font-size: 16px;
     cursor: pointer;
     border-radius: 4px;
-  }
-  
-  .product-list {
+}
+
+table {
+    width: 60%; /* テーブルの幅を60%に設定 */
+    border-collapse: collapse; /* 境界線を重ねる */
+    margin: 20px auto; /* 上下の余白を20px、左右を自動で中央配置 */
+}
+
+tr {
+    border-bottom: 1px solid #ccc; /* <tr>間の境界線を追加 */
+}
+
+th {
+    text-align: left; /* 左寄せ */
+    vertical-align: top; /* 垂直方向の上寄せ */
+    padding: 10px; /* パディングを追加 */
+}
+
+td {
+    text-align: right; /* 右寄せ */
+    padding: 10px; /* パディングを追加 */
+}
+
+#mypageButton {
+    display: block;
+    margin-left: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: #0077b6;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.product-list {
+    margin: 20px auto;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     grid-gap: 30px;
-  }
-  
-  .product {
+    width: 50%;
+}
+
+.product {
     background-color: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    text-align: center;
-  }
-  
-  .product a {
+    text-align: left;
+}
+
+.product a {
     font-size: 18px;
     font-weight: bold;
     color: #0077b6;
     text-decoration: none;
-  }
-  
-  .product p {
+}
+
+.product p {
     margin-top: 10px;
-  }
-  
-  .product-actions {
+    color: #555;
+    text-align: left;
+}
+
+.product-actions {
     display: flex;
-    justify-content: center;
+    justify-content: right;
     margin-top: 20px;
-  }
-  
-  .product-actions button {
-    margin: 0 5px;
-  }
-  
-  .edit-btn,
-  .delete-btn {
+    margin-right: 30px;
+}
+
+.product-actions button {
+    margin: 0 10px; /* ボタン間の間隔を10pxに設定 */
+}
+
+.delete-btn {
     background-color: #0077b6;
     color: white;
     border: none;
@@ -109,5 +122,17 @@ body {
     font-size: 14px;
     cursor: pointer;
     border-radius: 4px;
-  }
-  
+}
+
+.edit-btn {
+    background-color: #0077b6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-right: 20px; /* 右側のマージンを20pxに設定 */
+}
