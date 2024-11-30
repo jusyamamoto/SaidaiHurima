@@ -33,14 +33,50 @@ app.get("/", async (c) => {
 
 //topページを追加
 app.get("/top-page", async (c) => {
+    const sessionID = getCookie(c, "sessionID");
+    const userID = sessionMap.get(sessionID);
+
+    const user = await new Promise((resolve, reject) => {
+        db.get(queries.Users.findById, userID, (err, row) => {
+            if (err) {
+                console.error("データベース取得エラー:", err);
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+
+    if (!user) {
+        return c.notFound();
+    }
+
     const topContent = templates.TOP_VIEW();
-    const response = templates.HTMLfortoppage(topContent); // HTML全体の構造にTOPページのコンテンツを埋め込み
+    const response = templates.HTML(topContent); // HTML全体の構造にTOPページのコンテンツを埋め込み
     return c.html(response);
 });
 
 
 app.get("/product", async (c) => {
-  const Product = await new Promise((resolve) => {
+    const sessionID = getCookie(c, "sessionID");
+    const userID = sessionMap.get(sessionID);
+
+    const user = await new Promise((resolve, reject) => {
+        db.get(queries.Users.findById, userID, (err, row) => {
+            if (err) {
+                console.error("データベース取得エラー:", err);
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+
+    if (!user) {
+        return c.notFound();
+    }
+
+    const Product = await new Promise((resolve) => {
       db.all(queries.Product.findAll, (err, rows) => {
           resolve(rows);
       });
@@ -55,6 +91,24 @@ app.get("/product", async (c) => {
 });
 
 app.get("/sell", async (c) => {
+    const sessionID = getCookie(c, "sessionID");
+    const userID = sessionMap.get(sessionID);
+
+    const user = await new Promise((resolve, reject) => {
+        db.get(queries.Users.findById, userID, (err, row) => {
+            if (err) {
+                console.error("データベース取得エラー:", err);
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+
+    if (!user) {
+        return c.notFound();
+    }
+
     const registerForm = templates.PRODUCT_REGISTER_FORM_VIEW();
 
     const response = templates.HTML(registerForm);
@@ -111,6 +165,24 @@ app.post("/sell", async (c) => {
 
 
 app.get("/product/:id", async (c) => {
+    const sessionID = getCookie(c, "sessionID");
+    const userID = sessionMap.get(sessionID);
+
+    const user1 = await new Promise((resolve, reject) => {
+        db.get(queries.Users.findById, userID, (err, row) => {
+            if (err) {
+                console.error("データベース取得エラー:", err);
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+
+    if (!user1) {
+        return c.notFound();
+    }
+
     const productID = c.req.param("id");
 
     
@@ -210,6 +282,24 @@ app.get("/product/:id/change", async (c) => {
 
 // 商品情報の変更
 app.post("/product/:id/change", async (c) => {
+    const sessionID = getCookie(c, "sessionID");
+    const userID = sessionMap.get(sessionID);
+
+    const user = await new Promise((resolve, reject) => {
+        db.get(queries.Users.findById, userID, (err, row) => {
+            if (err) {
+                console.error("データベース取得エラー:", err);
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+
+    if (!user) {
+        return c.notFound();
+    }
+
     const productId = c.req.param("id");
     const body = await c.req.parseBody();
 
@@ -230,6 +320,24 @@ app.post("/product/:id/change", async (c) => {
 
 // 検索ページの追加
 app.get("/search", async (c) => {
+    const sessionID = getCookie(c, "sessionID");
+    const userID = sessionMap.get(sessionID);
+
+    const user = await new Promise((resolve, reject) => {
+        db.get(queries.Users.findById, userID, (err, row) => {
+            if (err) {
+                console.error("データベース取得エラー:", err);
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+
+    if (!user) {
+        return c.notFound();
+    }
+
     const searchForm = templates.SEARCH_FORM_VIEW();  // 検索フォームのHTML生成
     const response = templates.HTML(searchForm);
     return c.html(response);
@@ -237,6 +345,24 @@ app.get("/search", async (c) => {
 
 // 検索結果ページの追加
 app.get("/search/results", async (c) => { 
+    const sessionID = getCookie(c, "sessionID");
+    const userID = sessionMap.get(sessionID);
+
+    const user = await new Promise((resolve, reject) => {
+        db.get(queries.Users.findById, userID, (err, row) => {
+            if (err) {
+                console.error("データベース取得エラー:", err);
+                reject(err);
+            } else {
+                resolve(row);
+            }
+        });
+    });
+
+    if (!user) {
+        return c.notFound();
+    }
+
     const faculty = c.req.query("faculty");
     const department = c.req.query("department");
 
@@ -264,9 +390,10 @@ app.get("/search/results", async (c) => {
 
 
 app.get("/user/register", async (c) => {
+
     const registerForm = templates.USER_REGISTER_FORM_VIEW();
 
-    const response = templates.HTML(registerForm);
+    const response = templates.HTMLfortoppage(registerForm);
 
     return c.html(response);
 });
@@ -385,7 +512,7 @@ app.get("/login", async(c) => {
         return c.redirect(`/top-page`)
     } else {
         const loginView = templates.LOGIN_VIEW();
-        const response = templates.HTML(loginView);
+        const response = templates.HTMLfortoppage(loginView);
         return c.html(response);    
     }
 });

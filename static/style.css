@@ -23,6 +23,13 @@ header a {
   font-size: 30px; /* フォントサイズを設定 */
   font-weight: bold; /* 太字に設定 */
 }
+header p {
+  justify-content: flex-start;
+  text-decoration: none; /* リンクの下線を削除 */
+  color: white; /* リンクの文字色を白に設定 */
+  font-size: 30px; /* フォントサイズを設定 */
+  font-weight: bold; /* 太字に設定 */
+}
 
 .title {
   font-size: 60px;

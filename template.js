@@ -27,6 +27,9 @@ const HTMLfortoppage = (body) => html`
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/static/style.css">
 </head>
+<header>
+    <p>埼大フリマ</p>
+</header>
 <body>
     ${body}
 </body>
@@ -66,9 +69,9 @@ const PRODUCT_REGISTER_FORM_VIEW = () => html`
 <div id="message"></div> <!-- メッセージ表示用のエリア -->
 <form action="/sell" method="POST" id="productForm" class="form-group" enctype="multipart/form-data">
     <label for="content">商品名</label>
-    <input type="text" name="content" id="content" required />
+    <input type="text" name="content" id="content" placeholder="商品名" required />
     <label for="price">値段</label>
-    <input type="text" name="price" id="price" required />
+    <input type="text" name="price" id="price" placeholder="値段" required />
     
     <label for="faculty">学部</label>
     <select name="faculty" id="faculty" required>
@@ -78,11 +81,16 @@ const PRODUCT_REGISTER_FORM_VIEW = () => html`
 
     <label for="department">学科</label>
     <select name="department" id="department" required>
-        <option value="機械工学科">機械工学科</option>
+        <option value="機械工学・システムデザイン学科">機械工学・システムデザイン学科</option>
+        <option value="電気電子物理工学科">電気電子物理工学科</option>
         <option value="情報工学科">情報工学科</option>
-        <option value="環境社会学科">環境社会学科</option>
+        <option value="応用化学科">応用化学科</option>
+        <option value="環境社会デザイン学科">環境社会デザイン学科</option>
         <option value="数学科">数学科</option>
-        <option value="物理科">物理科</option>
+        <option value="物理学科">物理学科</option>
+        <option value="基礎化学科">基礎化学科</option>
+        <option value="分子生物学科">分子生物学科</option>
+        <option value="生体制御学科">生体制御学科</option>
     </select>
 
     <input type="file" name="imagePath" id ="imagePath" accept="image/*">
@@ -142,11 +150,15 @@ const SEARCH_FORM_VIEW = () => html`
 
     <label for="department">学科</label>
     <select name="department" id="department">
-        <option value="機械工学科">機械工学科</option>
+        <option value="機械工学・システムデザイン学科">機械工学・システムデザイン学科</option>
+        <option value="電気電子物理工学科">電気電子物理工学科</option>
         <option value="情報工学科">情報工学科</option>
-        <option value="環境社会学科">環境社会学科</option>
+        <option value="環境社会デザイン学科">環境社会デザイン学科</option>
         <option value="数学科">数学科</option>
-        <option value="物理科">物理科</option>
+        <option value="物理学科">物理学科</option>
+        <option value="基礎化学科">基礎化学科</option>
+        <option value="分子生物学科">分子生物学科</option>
+        <option value="生体制御学科">生体制御学科</option>
     </select>
 
     <button type="submit">検索</button>
@@ -178,19 +190,22 @@ const USER_REGISTER_FORM_VIEW = () => html`
     <form id="user-register" class="form-group">
 
         <label for="name">名前</label>
-        <input type="text" name="name" id="name" required />
+        <input type="text" name="name" id="name" placeholder="名前"required />
 
         <label for="studentID">学籍番号</label>
-        <input type="text" name="studentID" id="studentID" required />
+        <input type="text" name="studentID" id="studentID" placeholder="学籍番号"required />
 
         <label for="faculty">学部</label>
-        <input type="text" name="faculty" id="faculty" required />
+        <select name="faculty" id="faculty" required>
+            <option value="工学部">工学部</option>
+            <option value="理学部">理学部</option>
+        </select>
 
         <label for="email">メールアドレス</label>
-        <input type="email" name="email" id="email" required />
+        <input type="email" name="email" id="email" placeholder="メールアドレス 例:Justice@yamamoto.com" required />
 
         <label for="password">パスワード</label>
-        <input type="password" name="password" id="password" required />
+        <input type="password" name="password" id="password" placeholder="パスワード" required />
 
         <button type="submit" id="submit">登録</button>
     </form>
@@ -240,18 +255,20 @@ const USER_REGISTER_FORM_VIEW = () => html`
 const USER_CHANGE_VIEW = (user) => html`
 <h1 class="title">${user.name}さんのユーザー情報変更</h1>
 <form action="/user/${user.id}/change" method="POST">
-    <label for="name">${user.name}</label>
-    <input type="text" name="name" id="name" /><br />
-    <label for="studentID">${user.studentID}</label>
-    <input type="text" name="studentID" id="studentID" /><br />
-    <label for="faculty">${user.faculty}</label>
-    <input type="text" name="faculty" id="faculty" /><br />
-    <label for="email">${user.email}</label>
-    <input type="text" name="email" id="email" /><br />
-    <button type="submit">登録</button>
+    <label for="name">名前</label>
+    <input type="text" name="name" id="name" value="${user.name}" required/><br />
+    <label for="studentID">学籍番号</label>
+    <input type="text" name="studentID" id="studentID" value="${user.studentID}" required/><br />
+    <label for="faculty">学部</label>
+    <select name="faculty" id="faculty" required>
+        <option value="工学部" ${user.faculty === '工学部' ? 'selected' : ''}>工学部</option>
+        <option value="理学部" ${user.faculty === '理学部' ? 'selected' : ''}>理学部</option>
+    </select>
+    <label for="email">メールアドレス</label>
+    <input type="text" name="email" id="email" value="${user.email}" required/><br />
+    <button type="submit">変更</button>
 </form>
 `;
-
 
 //商品情報
 const PRODUCT_VIEW = (user, product)=> html`
@@ -281,14 +298,9 @@ const PRODUCT_VIEW = (user, product)=> html`
   </table>
   </div>
 </div>
-<button type="button" onclick="matchingbutton('${user.email}')">マッチング</button>
-<!--デザインの関係でコメントアウト中・・・中村
-    <label for="email">削除するにはメールアドレスを入力してください</label>
-    <div id="message"></div> メッセージ表示用のエリア
-    <input type="email" id="email" placeholder="メールアドレスを入力">
-    <button id="deleteButton">削除</button>
-    <button  type="button" onclick="location.href='/product/${product.id}/change'">商品情報の変更</button>
--->
+<div class = "button-place">
+    <button type="button" onclick="matchingbutton('${user.email}')">フリマする</button>
+</div>
 <script>
     function matchingbutton(email){
         alert("出品者のメールアドレスは"+email+"です");
@@ -315,11 +327,16 @@ const PRODUCT_CHANGE_FORM_VIEW = (user, product) => html`
 
     <label for="department">学科</label>
     <select name="department" id="department" required>
-        <option value="機械工学科" ${product.department === '機械工学科' ? 'selected' : ''}>機械工学科</option>
+        <option value="機械工学・システムデザイン学科" ${product.department === '機械工学・システムデザイン学科' ? 'selected' : ''}>機械工学・システムデザイン学科</option>
+        <option value="電気電子物理工学科" ${product.department === '電気電子物理工学科' ? 'selected' : ''}>電気電子物理工学科</option>
         <option value="情報工学科" ${product.department === '情報工学科' ? 'selected' : ''}>情報工学科</option>
-        <option value="環境社会学科" ${product.department === '環境社会学科' ? 'selected' : ''}>環境社会学科</option>
+        <option value="応用化学科" ${product.department === '応用化学科' ? 'selected' : ''}>応用化学科</option>
+        <option value="環境社会デザイン学科" ${product.department === '環境社会デザイン学科' ? 'selected' : ''}>環境社会デザイン学科</option>
         <option value="数学科" ${product.department === '数学科' ? 'selected' : ''}>数学科</option>
-        <option value="物理科" ${product.department === '物理科' ? 'selected' : ''}>物理科</option>
+        <option value="物理学科" ${product.department === '物理学科' ? 'selected' : ''}>物理学科</option>
+        <option value="基礎化学科" ${product.department === '基礎化学科' ? 'selected' : ''}>基礎化学科</option>
+        <option value="分子生物学科" ${product.department === '分子生物学科' ? 'selected' : ''}>分子生物学科</option>
+        <option value="生体制御学科" ${product.department === '生体制御学科' ? 'selected' : ''}>生体制御学科</option>
     </select>
 
     <button type="submit">変更</button>
@@ -373,7 +390,7 @@ const LOGIN_VIEW = () => html`
 const MYPAGE_VIEW = (user , Product) => html`
 <link rel="stylesheet" href="/static/my-page.css">
 <div class="container">
-  <h1 class="title">リンゴ太郎さんのマイページ</h1>
+  <h1 class="title">${user.name}さんのマイページ</h1>
   <button class="logout-btn" onclick="location.href='/logout'">ログアウト</button>
 
 <table>
