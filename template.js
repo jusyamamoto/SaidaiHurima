@@ -192,7 +192,7 @@ const USER_REGISTER_FORM_VIEW = () => html`
         <label for="password">パスワード</label>
         <input type="password" name="password" id="password" required />
 
-        <button type="submit">登録</button>
+        <button type="submit" id="submit">登録</button>
     </form>
 </div>
 <script>
@@ -377,28 +377,27 @@ const MYPAGE_VIEW = (user , Product) => html`
   <button class="logout-btn" onclick="location.href='/logout'">ログアウト</button>
 
 <table>
-  <div class="account-info">
-    <h2>アカウント情報</h2>
-      <tr>
-        <th>学生番号:</th>
-        <td>${user.studentID}</td>
-      </tr>
-      <tr>
-        <th>学部:</th>
-        <td>${user.faculty}</td>
-      </tr>
-      <tr>
-        <th>アカウント作成日:</th>
-        <td>${user.created_at}</td>
-      </tr>
-    <a href="/user/${user.id}/change" class="change-btn">ユーザー情報の変更</a>
-  </div>
-
-  <div class="account-delete">
-    <h2>アカウント削除</h2>
-    <div id="message"></div>
-    <button type="button" class="delete-btn" onclick="deleteAccount()">削除</button>
-  </div>
+    <tr>
+        <th scope="row">アカウント情報</th>
+        <td>
+            <p>学生番号:${user.studentID}<br></p>
+            <p>学部:${user.faculty}<br></p>
+            <p>アカウント作成日:${user.created_at}</p>
+        </td>
+    </tr>
+    <tr>
+        <th>アカウント情報の変更</th>
+        <td>
+            <button id="mypageButton" class="change-btn" onclick="location.href='/user/${user.id}/change'">変更</button>
+        </td>
+    </tr>
+    <tr>
+        <th>アカウントの削除</th>
+        <td>
+            <button id="mypageButton" type="button" class="delete-btn" onclick="deleteAccount()">削除</button>
+            <div id="message"></div>
+        </td>
+    </tr>
 <table>
 
   <h1 class="title">出品商品一覧</h1>
